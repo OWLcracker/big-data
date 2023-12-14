@@ -125,7 +125,7 @@ services:
 
   jupyter:
     image: 'jupyter/pyspark-notebook'
-    command: "bash -c 'pip install findspark && jupyter notebook'"
+    command: "bash -c 'pip install findspark && start-notebook.sh --NotebookApp.token='' --NotebookApp.password='''"
     volumes:
       - ./notebooks:/home/jovyan/work
     ports:
