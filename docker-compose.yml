@@ -13,17 +13,19 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
+
+
+
 x-superset-image: &superset-image apachesuperset.docker.scarf.sh/apache/superset:${TAG:-latest-dev}
 x-superset-depends-on: &superset-depends-on
   - db
   - redis
 x-superset-volumes:
-  &superset-volumes # /app/pythonpath_docker will be appended to the PYTHONPATH in the final container
+  &superset-volumes
   - ./docker:/app/docker
   - superset_home:/app/superset_home
 
-version: "3.7"
+version: '3.7'
 services:
   redis:
     image: redis:7
@@ -45,21 +47,21 @@ services:
     env_file: docker/.env-non-dev
     image: *superset-image
     container_name: superset_app
-    command: ["/app/docker/docker-bootstrap.sh", "app-gunicorn"]
-    user: "root"
+    command: ['/app/docker/docker-bootstrap.sh', 'app-gunicorn']
+    user: 'root'
     restart: unless-stopped
     ports:
-      - "127.0.0.1:8088:8088"
+      - '8088:8088'
     depends_on: *superset-depends-on
     volumes: *superset-volumes
 
   superset-init:
     image: *superset-image
     container_name: superset_init
-    command: ["/app/docker/docker-init.sh"]
+    command: ['/app/docker/docker-init.sh']
     env_file: docker/.env-non-dev
     depends_on: *superset-depends-on
-    user: "root"
+    user: 'root'
     volumes: *superset-volumes
     healthcheck:
       disable: true
@@ -67,27 +69,27 @@ services:
   superset-worker:
     image: *superset-image
     container_name: superset_worker
-    command: ["/app/docker/docker-bootstrap.sh", "worker"]
+    command: ['/app/docker/docker-bootstrap.sh', 'worker']
     env_file: docker/.env-non-dev
     restart: unless-stopped
     depends_on: *superset-depends-on
-    user: "root"
+    user: 'root'
     volumes: *superset-volumes
     healthcheck:
       test:
         [
-          "CMD-SHELL",
-          "celery -A superset.tasks.celery_app:app inspect ping -d celery@$$HOSTNAME",
+          'CMD-SHELL',
+          'celery -A superset.tasks.celery_app:app inspect ping -d celery@$$HOSTNAME',
         ]
 
   superset-worker-beat:
     image: *superset-image
     container_name: superset_worker_beat
-    command: ["/app/docker/docker-bootstrap.sh", "beat"]
+    command: ['/app/docker/docker-bootstrap.sh', 'beat']
     env_file: docker/.env-non-dev
     restart: unless-stopped
     depends_on: *superset-depends-on
-    user: "root"
+    user: 'root'
     volumes: *superset-volumes
     healthcheck:
       disable: true
@@ -103,9 +105,10 @@ services:
       - SPARK_USER=spark
       - SPARK_PUBLIC_DNS=127.0.0.1
     volumes:
-      - ./notebooks:/opt/bitnami/spark/work
+      - ./notebooks:/home/jovyan/work
+      - ./docker/spark-defaults.conf:/opt/bitnami/spark/conf/spark-defaults.conf
     ports:
-      - '127.0.0.1:8080:8080'
+      - '8080:8080'
 
   spark-worker:
     image: docker.io/bitnami/spark:3.5
@@ -120,17 +123,25 @@ services:
       - SPARK_SSL_ENABLED=no
       - SPARK_USER=spark
       - SPARK_PUBLIC_DNS=127.0.0.1
+    volumes:
+      - ./notebooks:/home/jovyan/work
+      - ./docker/spark-defaults.conf:/opt/bitnami/spark/conf/spark-defaults.conf
     ports:
-      - '127.0.0.1:8081:8081'
+      - '8081:8081'
 
   jupyter:
     image: 'jupyter/pyspark-notebook'
-    command: "bash -c 'pip install findspark && start-notebook.sh --NotebookApp.token='' --NotebookApp.password='''"
+    environment:
+      - SPARK_PUBLIC_DNS=127.0.0.1
+      - SPARK_CONF_DIR=/conf
+    command: "bash -c 'start-notebook.sh --NotebookApp.token='' --NotebookApp.password='''"
     volumes:
       - ./notebooks:/home/jovyan/work
+      - ./docker/spark-defaults.conf:/conf/spark-defaults.conf
     ports:
-      - '127.0.0.1:8888:8888'
-      - '127.0.0.1:4040:4040'
+      - '8888:8888'
+      - '4040:4040'
+      - '10000:10000'
 
 volumes:
   superset_home:
