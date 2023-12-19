@@ -134,7 +134,7 @@ services:
     environment:
       - SPARK_PUBLIC_DNS=127.0.0.1
       - SPARK_CONF_DIR=/conf
-    command: "bash -c 'start-notebook.sh --NotebookApp.token='' --NotebookApp.password='''"
+    command: "bash -c 'start-notebook.sh'"
     volumes:
       - ./notebooks:/home/jovyan/work
       - ./docker/spark-defaults.conf:/conf/spark-defaults.conf
