@@ -160,3 +160,4 @@ cython_debug/
 .idea/
 /notebooks/metastore_db/
 /notebooks/derby.log
+/backups

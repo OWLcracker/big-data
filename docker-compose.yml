@@ -14,8 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
-
+x-superset-env-file: &superset-env-file ./config/.env-superset
+x-spark-env-file: &spark-env-file ./config/.env-spark
 x-superset-image: &superset-image apachesuperset.docker.scarf.sh/apache/superset:${TAG:-latest-dev}
 x-superset-depends-on: &superset-depends-on
   - db
@@ -23,6 +23,7 @@ x-superset-depends-on: &superset-depends-on
 x-superset-volumes:
   &superset-volumes
   - ./docker:/app/docker
+  - ./config/superset_config.py:/app/pythonpath/superset_config.py
   - superset_home:/app/superset_home
 
 version: '3.7'
@@ -35,16 +36,17 @@ services:
       - redis:/data
 
   db:
-    env_file: docker/.env-non-dev
+    env_file: *superset-env-file
     image: postgres:15
     container_name: superset_db
     restart: unless-stopped
+    ports:
+      - '5432:5432'
     volumes:
       - db_home:/var/lib/postgresql/data
-      - ./docker/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
 
   superset:
-    env_file: docker/.env-non-dev
+    env_file: *superset-env-file
     image: *superset-image
     container_name: superset_app
     command: ['/app/docker/docker-bootstrap.sh', 'app-gunicorn']
@@ -59,7 +61,7 @@ services:
     image: *superset-image
     container_name: superset_init
     command: ['/app/docker/docker-init.sh']
-    env_file: docker/.env-non-dev
+    env_file: *superset-env-file
     depends_on: *superset-depends-on
     user: 'root'
     volumes: *superset-volumes
@@ -70,7 +72,7 @@ services:
     image: *superset-image
     container_name: superset_worker
     command: ['/app/docker/docker-bootstrap.sh', 'worker']
-    env_file: docker/.env-non-dev
+    env_file: *superset-env-file
     restart: unless-stopped
     depends_on: *superset-depends-on
     user: 'root'
@@ -86,7 +88,7 @@ services:
     image: *superset-image
     container_name: superset_worker_beat
     command: ['/app/docker/docker-bootstrap.sh', 'beat']
-    env_file: docker/.env-non-dev
+    env_file: *superset-env-file
     restart: unless-stopped
     depends_on: *superset-depends-on
     user: 'root'
@@ -96,48 +98,37 @@ services:
 
   spark:
     image: docker.io/bitnami/spark:3.5
+    env_file: *spark-env-file
     environment:
       - SPARK_MODE=master
-      - SPARK_RPC_AUTHENTICATION_ENABLED=no
-      - SPARK_RPC_ENCRYPTION_ENABLED=no
-      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
-      - SPARK_SSL_ENABLED=no
-      - SPARK_USER=spark
-      - SPARK_PUBLIC_DNS=127.0.0.1
     volumes:
-      - ./notebooks:/home/jovyan/work
-      - ./docker/spark-defaults.conf:/opt/bitnami/spark/conf/spark-defaults.conf
+      - ./config/spark-defaults.conf:/opt/bitnami/spark/conf/spark-defaults.conf
     ports:
       - '8080:8080'
 
   spark-worker:
     image: docker.io/bitnami/spark:3.5
+    env_file: *spark-env-file
     environment:
       - SPARK_MODE=worker
       - SPARK_MASTER_URL=spark://spark:7077
       - SPARK_WORKER_MEMORY=8G
       - SPARK_WORKER_CORES=8
-      - SPARK_RPC_AUTHENTICATION_ENABLED=no
-      - SPARK_RPC_ENCRYPTION_ENABLED=no
-      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
-      - SPARK_SSL_ENABLED=no
-      - SPARK_USER=spark
-      - SPARK_PUBLIC_DNS=127.0.0.1
     volumes:
       - ./notebooks:/home/jovyan/work
-      - ./docker/spark-defaults.conf:/opt/bitnami/spark/conf/spark-defaults.conf
+      - ./config/spark-defaults.conf:/opt/bitnami/spark/conf/spark-defaults.conf
     ports:
       - '8081:8081'
 
   jupyter:
     image: 'jupyter/pyspark-notebook'
+    env_file: *spark-env-file
     environment:
-      - SPARK_PUBLIC_DNS=127.0.0.1
       - SPARK_CONF_DIR=/conf
-    command: "bash -c 'start-notebook.sh'"
+    command: "start-notebook.sh --NotebookApp.token='token'"
     volumes:
       - ./notebooks:/home/jovyan/work
-      - ./docker/spark-defaults.conf:/conf/spark-defaults.conf
+      - ./config/spark-defaults.conf:/conf/spark-defaults.conf
     ports:
       - '8888:8888'
       - '4040:4040'
