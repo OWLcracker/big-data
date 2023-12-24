@@ -44,6 +44,8 @@ services:
       - '5432:5432'
     volumes:
       - db_home:/var/lib/postgresql/data
+      - ./databases/dump.sql:/docker-entrypoint-initdb.d/dump.sql
+
 
   superset:
     env_file: *superset-env-file
