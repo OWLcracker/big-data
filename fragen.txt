@@ -1,7 +1,0 @@
-Fragen an Prof:
-1. Daten voraggregieren und bei runtime restliche aggregation vornehmen inordnung?
-2. Use case heatmap von krisenherden mit anpassbarer zeitscala mit farbspektrum. Auch nach morden etc. --> Passt das? Reicht der Usecase?
-3. Druid anstatt spark in ordnung für das processing von neu aggregierten daten? Oder Spark irgendwie dazwischen? wie würde man das machen?
-   Oder einfach nur spark mit festspeicher?
-4. Historische daten ausreichend oder im 15 min tackt neue hinzufügen?
-5. Superset, Druid und Spark als Architektur passend?
