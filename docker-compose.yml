@@ -43,8 +43,7 @@ services:
     ports:
       - '5432:5432'
     volumes:
-      - db_home:/var/lib/postgresql/data
-      - ./databases/dump.sql:/docker-entrypoint-initdb.d/dump.sql
+      - ./databases/pgdata:/var/lib/postgresql/data
 
 
   superset:
@@ -138,8 +137,6 @@ services:
 
 volumes:
   superset_home:
-    external: false
-  db_home:
     external: false
   redis:
     external: false
