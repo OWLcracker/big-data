@@ -19,11 +19,17 @@
 
 To run the project you need to have [Docker](https://www.docker.com/get-started/) (including docker compose) installed and running on your machine.
 
+Additional make sure your are using WSL if you're running on Windows:
+- Open docker desktop
+- Navigate to `Settings` > `General`
+- Tick the box next to `Use the WSL 2 based engine`
+- Restart the docker engine
+<!---
 Additionally you need to allow docker to access the files in this repository:
 
 - Open docker desktop
 - Navigate to `Settings` > `Ressources` > `File sharing`
-- Add the file path to the repository
+- Add the file path to the repository --->
 
 ### Setup
 

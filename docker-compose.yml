@@ -115,6 +115,8 @@ services:
       - SPARK_MASTER_URL=spark://spark:7077
       - SPARK_WORKER_MEMORY=8G
       - SPARK_WORKER_CORES=8
+    depends_on:
+      - spark
     volumes:
       - ./notebooks:/home/jovyan/work
       - ./config/spark-defaults.conf:/opt/bitnami/spark/conf/spark-defaults.conf
@@ -124,12 +126,15 @@ services:
   jupyter:
     image: 'jupyter/pyspark-notebook'
     env_file: *spark-env-file
+    user: root
     environment:
-      - SPARK_CONF_DIR=/conf
-    command: "start-notebook.sh --NotebookApp.token='token'"
+      - GRANT_SUDO=yes
+    command: >
+      bash -c "pip install thrift thrift_sasl pyhive
+      && start-notebook.sh --NotebookApp.token='token'"
     volumes:
       - ./notebooks:/home/jovyan/work
-      - ./config/spark-defaults.conf:/conf/spark-defaults.conf
+      - ./config/spark-defaults.conf:/usr/local/spark/conf/spark-defaults.conf
     ports:
       - '8888:8888'
       - '4040:4040'
