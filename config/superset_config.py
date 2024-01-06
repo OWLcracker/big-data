@@ -86,6 +86,22 @@ WEBDRIVER_BASEURL_USER_FRIENDLY = WEBDRIVER_BASEURL
 
 SQLLAB_CTAS_NO_LIMIT = True
 
+EXTRA_SEQUENTIAL_COLOR_SCHEMES = [
+    {
+        "id": 'greenYellowRedHeatmap',
+        "description": '',
+        "isDiverging": True,
+        "label": 'Custom Heatmap',
+        "isDefault": True,
+        "colors": [
+            '#00EC00',  # Vivid Green
+            '#FFFF00',  # Yellow
+            '#FF0000'   # Red
+        ]
+    }
+]
+
+
 # TODO: remove
 #
 # Optionally import superset_config_docker.py (which will have been included on
