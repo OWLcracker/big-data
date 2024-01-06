@@ -136,7 +136,7 @@ services:
       - ./notebooks:/home/jovyan/work
       - ./config/spark-defaults.conf:/usr/local/spark/conf/spark-defaults.conf
     ports:
-      - '8888:8888'
+      - '127.0.0.1:8888:8888'
       - '4040:4040'
       - '10000:10000'
 
