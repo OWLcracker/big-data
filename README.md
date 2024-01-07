@@ -88,5 +88,8 @@ Connection URI from Superset to the Thrift Server
 
 ```
 hive://spark@jupyter:10000/default
+
+find [directory] -type d -empty -exec touch {}/.gitkeep \;
+
 ```
 --->
