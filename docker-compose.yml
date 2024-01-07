@@ -43,7 +43,7 @@ services:
     ports:
       - '5432:5432'
     volumes:
-      - ./databases/pgdata:/var/lib/postgresql/data
+      - ./superset_database:/var/lib/postgresql/data
 
 
   superset:
