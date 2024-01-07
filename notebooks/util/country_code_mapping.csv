@@ -59,7 +59,7 @@ Cuba;CU;CU
 Curacao;UC;CW
 Cyprus;CY;CY
 Czechia;EZ;CZ
-Denmark;DK;DK
+Denmark;DA;DK
 Djibouti;DJ;DJ
 Dominica;DO;DM
 Dominican Republic;DR;DO
@@ -118,6 +118,7 @@ Kenya;KE;KE
 Kiribati;KR;KI
 Korea (Democratic People’s Republic of);KN;KP
 Korea (Republic of);KS;KR
+Kosovo;KV;XK
 Kuwait;KU;KW
 Kyrgyzstan;KG;KG
 Lao People’s Democratic Republic;LA;LA
@@ -169,6 +170,7 @@ Oman;MU;OM
 Pakistan;PK;PK
 Palau;PS;PW
 Palestine, State of;WE;PS
+Palestine, State of;GZ;PS
 Panama;PM;PA
 Papua New Guinea;PP;PG
 Paraguay;PA;PY
@@ -240,7 +242,7 @@ Uruguay;UY;UY
 Uzbekistan;UZ;UZ
 Vanuatu;NH;VU
 Venezuela (Bolivarian Republic of);VE;VE
-Viet Nam;VN;VN
+Vietnam;VM;VN
 Virgin Islands (British);VI;VG
 Virgin Islands (U.S.);VQ;VI
 Wallis and Futuna;WF;WF
