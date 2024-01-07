@@ -94,9 +94,9 @@ EXTRA_SEQUENTIAL_COLOR_SCHEMES = [
         "label": 'Custom Heatmap',
         "isDefault": True,
         "colors": [
-            '#00EC00',  # Vivid Green
+            '#FF0000',   # Red
             '#FFFF00',  # Yellow
-            '#FF0000'   # Red
+            '#00EC00'  # Vivid Green
         ]
     }
 ]
