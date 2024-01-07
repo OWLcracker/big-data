@@ -71,6 +71,10 @@ To run the application code of the project you have to to the following steps:
 2. When prompted for a token type in `"token"`
 3. Navigate to `notebooks` > `main.ipynb`
 4. Run the code cells in the notebook
+5. Open the superset dahboard to view the results
+6. When prompted for a login use the following credentials:
+    - Username: `admin`
+    - Password: `admin`
 
 **Don't start a seperate jupyter server to run the notebook.**
 ## Documentation
