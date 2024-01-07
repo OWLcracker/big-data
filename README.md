@@ -72,6 +72,7 @@ To run the application code of the project you have to to the following steps:
 3. Navigate to `notebooks` > `main.ipynb`
 4. Run the code cells in the notebook
 
+**Don't start a seperate jupyter server to run the notebook.**
 ## Documentation
 
 ### Spark
