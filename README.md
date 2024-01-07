@@ -68,7 +68,7 @@ The following web interfaces can be accessed after the setup has been completed 
 ### Run Code
 To run the application code of the project you have to to the following steps:
 1. Open the Jupyter Notebook web interface
-2. When prompted for a token type in `"token"`
+2. When prompted for a token type in `token`
 3. Navigate to `notebooks` > `main.ipynb`
 4. Run the code cells in the notebook
 5. Open the superset dahboard to view the results
