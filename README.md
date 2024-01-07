@@ -4,10 +4,12 @@
 
 ## Table of Contents
 
-1. [Getting Started](#getting started)
+1. [Getting Started](#getting-started)
     - [Prerequesites](#prerequesites)
     - [Setup](#setup)
 2. [Usage](#usage)
+   - [Web Interfaces](#web-interfaces)
+   - [Run Code](#run-code)
 3. [Documentation](#documentation)
     - [Spark](#spark)
     - [Superset](#superset)
@@ -29,12 +31,13 @@ Additionally you need to allow docker to access the files in this repository:
 
 - Open docker desktop
 - Navigate to `Settings` > `Ressources` > `File sharing`
-- Add the file path to the repository --->
+- Add the file path to the repository 
+--->
 
 ### Setup
 
 First you have to clone this repository.
-The open your command line and navigate to the root of this repository.
+Then open your command line and navigate to the root directory of this repository.
 To setup the project, execute the following command:
 
 ```
@@ -47,12 +50,12 @@ Jupyter Server.
 To shut down the all containers, execute the following command:
 
 ```
-docker compose down
+docker compose down --volumes
 ```
 
 ## Usage
-
-The following UI components can be accessed:
+### Web Interfaces
+The following web interfaces can be accessed after the setup has been completed successfully:
 
 | Component          | URL                    | Description                                                                                                                       |
 |:-------------------|:-----------------------|:----------------------------------------------------------------------------------------------------------------------------------|
@@ -62,6 +65,13 @@ The following UI components can be accessed:
 | Spark Application  | http://localhost:4040/ | Spark application web UI, showing details of jobs, thrift server etc. (available when a spark session is initialized in juypter). |
 | Juypter Notebook   | http://localhost:8888/ | JupyterLab interface to interactively execute the python code of this project.                                                    |
 
+### Run Code
+To run the application code of the project you have to to the following steps:
+1. Open the Jupyter Notebook web interface
+2. When prompted for a token type in `"token"`
+3. Navigate to `notebooks` > `main.ipynb`
+4. Run the code cells in the notebook
+
 ## Documentation
 
 ### Spark
@@ -70,6 +80,7 @@ The following UI components can be accessed:
 
 ### Jupyter
 
+<!---
 ## Notes
 
 Connection URI from Superset to the Thrift Server
@@ -77,3 +88,4 @@ Connection URI from Superset to the Thrift Server
 ```
 hive://spark@jupyter:10000/default
 ```
+--->
