@@ -1,6 +1,5 @@
 ﻿CountryName;FIPS 10-4;ISO 3166-1
 Afghanistan;AF;AF
-Aland Islands;–;AX
 Albania;AL;AL
 Algeria;AG;DZ
 American Samoa;AQ;AS
@@ -26,7 +25,6 @@ Benin;BN;BJ
 Bermuda;BD;BM
 Bhutan;BT;BT
 Bolivia (Plurinational State of);BL;BO
-Bonaire, Sint Eustatius and Saba;–;BQ
 Bosnia and Herzegovina;BK;BA
 Botswana;BC;BW
 Bouvet Island;BV;BV
@@ -237,7 +235,6 @@ Ukraine;UP;UA
 United Arab Emirates;AE;AE
 United Kingdom of Great Britain and Northern Ireland;UK;GB
 United States of America;US;US
-United States Minor Outlying Islands;–;UM
 Uruguay;UY;UY
 Uzbekistan;UZ;UZ
 Vanuatu;NH;VU
