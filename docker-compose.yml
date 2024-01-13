@@ -97,6 +97,8 @@ services:
     environment:
       - SPARK_MODE=worker
       - SPARK_WORKER_WEBUI_PORT=8081
+      - GRANT_SUDO=yes
+    user: root
     depends_on:
       - spark
     volumes:
@@ -111,6 +113,8 @@ services:
     environment:
       - SPARK_MODE=worker
       - SPARK_WORKER_WEBUI_PORT=8082
+      - GRANT_SUDO=yes
+    user: root
     depends_on:
       - spark
     volumes:
@@ -125,6 +129,8 @@ services:
     environment:
       - SPARK_MODE=worker
       - SPARK_WORKER_WEBUI_PORT=8083
+      - GRANT_SUDO=yes
+    user: root
     depends_on:
       - spark
     volumes:
