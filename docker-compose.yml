@@ -146,7 +146,7 @@ services:
     environment:
       - GRANT_SUDO=yes
     command: >
-      bash -c "pip install thrift thrift_sasl pyhive
+      bash -c "pip install thrift thrift_sasl pyhive sqlalchemy
       && start-notebook.sh --NotebookApp.token='token'"
     volumes:
       - ./notebooks:/home/jovyan/work
