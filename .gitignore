@@ -161,4 +161,4 @@ cython_debug/
 /notebooks/metastore/
 /notebooks/derby.log
 /notebooks/data/
-/backups
+/backup
