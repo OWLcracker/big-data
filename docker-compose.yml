@@ -140,7 +140,7 @@ services:
       - '8083:8083'
 
   jupyter:
-    image: 'jupyter/pyspark-notebook'
+    image: jupyter/pyspark-notebook
     env_file: *spark-env-file
     user: root
     environment:

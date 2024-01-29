@@ -3,40 +3,42 @@
 <!--- TODO: add short summary of the project --->
 
 ## TODO
-- [] Tests erstellen
-   - [] Scalability (load, queries) -> Gleiche Datenmenge, alles In-Memory, Requests in parallelen Threads, Average pro Request
-   - [] Scalability (n worker) -> Gleiches Setup, unterschiedliche Anzahl an Worker, alles In-Memory
-   - [] Scalability (data) -> Unterschiedliche Datenmengen, RAM als bottleneck
-   - [] Fault tolerance (kill worker)
-- [] Tests ausführen
-- [] Jupyter Notebook Markdown Erklärungen
-- [] Diagramme von Testergebnissen
-- [] Daten bereitstellen & Einfügen ermöglichen
-- [] Github Readme
-  - [] Nutzungsanleitung anpassen -> Daten reinziehen, Kernel restarten
-  - [] References (Superset Docker Compose, Bitnami Docker Images)
-  - [] Untersuchungen/Erläuterungen in Readme integrieren 
-- [] Erläuterungen
-  - [] Prototyp
-     - [] Architektur
-     - [] Workflow
-     - [] Superset Dashboard
-  - [] Case
-    - Big Data (Warum Big Data Case? Warum nicht mit traditionellen Lösungen umsetzbar) 
-    - Verteilung, Parallelisierung, Skalierbarkeit, Fault Tolerance, Data Storage
-    - Shortcuts/Limitations
-  - [] Skalierbarkeit
-    - Auswirkung zusätzlicher Daten/Queries ~ Ressourcen
-    - Datenfluss (IO-/Memory-/CPU-bound)
-    - Skalierbarkeit der einzelnen Abschnitte
-    - Partitionierung
-    - Dimensionierung für Realität (Kosten, Aufwand, Expertenwissen, Hardware)
-  - [] Fault Tolerance
-    - Verhalten bei Fehlern (kill Node)
-    - Verhalten Netzwerkunterbrechung
-    - Auswirkung von Fehleroleranzmechanismen auf System
-- [] Ausblick
-  - [] Reale Architektur (inkl. beteiligter Personen, Komponenten, Hardware) -> Parquet File(s) in HDFS Cluster
+
+- [ ] Tests erstellen
+    - [ ] Scalability (load, queries) -> Gleiche Datenmenge, alles In-Memory, Requests in parallelen Threads, Average
+      pro Request
+    - [ ] Scalability (n worker) -> Gleiches Setup, unterschiedliche Anzahl an Worker, alles In-Memory
+    - [ ] Scalability (data) -> Unterschiedliche Datenmengen, RAM als bottleneck
+    - [ ] Fault tolerance (kill worker)
+- [ ] Tests ausführen
+- [ ] Jupyter Notebook Markdown Erklärungen
+- [ ] Diagramme von Testergebnissen
+- [ ] Daten bereitstellen & Einfügen ermöglichen
+- [ ] Github Readme
+    - [x] Nutzungsanleitung anpassen -> Daten reinziehen, Kernel restarten
+    - [x] References (Superset Docker Compose, Bitnami Docker Images)
+    - [ ] Untersuchungen/Erläuterungen in Readme integrieren
+- [ ] Erläuterungen
+    - [ ] Prototyp
+        - [ ] Architektur
+        - [ ] Workflow
+        - [ ] Superset Dashboard
+    - [ ] Case
+        - Big Data (Warum Big Data Case? Warum nicht mit traditionellen Lösungen umsetzbar)
+        - Verteilung, Parallelisierung, Skalierbarkeit, Fault Tolerance, Data Storage
+        - Shortcuts/Limitations
+    - [ ] Skalierbarkeit
+        - Auswirkung zusätzlicher Daten/Queries ~ Ressourcen
+        - Datenfluss (IO-/Memory-/CPU-bound)
+        - Skalierbarkeit der einzelnen Abschnitte
+        - Partitionierung
+        - Dimensionierung für Realität (Kosten, Aufwand, Expertenwissen, Hardware)
+    - [ ] Fault Tolerance
+        - Verhalten bei Fehlern (kill Node)
+        - Verhalten Netzwerkunterbrechung
+        - Auswirkung von Fehleroleranzmechanismen auf System
+- [ ] Ausblick
+    - [ ] Reale Architektur (inkl. beteiligter Personen, Komponenten, Hardware) -> Parquet File(s) in HDFS Cluster
 
 ## Table of Contents
 
@@ -45,11 +47,13 @@
     - [Setup](#setup)
 2. [Usage](#usage)
     - [Web Interfaces](#web-interfaces)
-    - [Run Code](#run-code)
+    - [Run Main Code](#run-main-code)
+    - [Run Test Code](#run-test-code)
 3. [Documentation](#documentation)
     - [Spark](#spark)
     - [Superset](#superset)
     - [Jupyter](#jupyter)
+4. [References](#references)
 
 ## Getting Started
 
@@ -108,7 +112,7 @@ The following web interfaces can be accessed after the setup has been completed 
 | Spark Application  | http://localhost:4040/ | Spark application web UI, showing details of jobs, thrift server etc. (available when a spark session is initialized in juypter). |
 | Juypter Notebook   | http://localhost:8888/ | JupyterLab interface to interactively execute the python code of this project.                                                    |
 
-### Run Code
+### Run Main Code
 
 To run the application code of the project you have to to the following steps:
 
@@ -123,6 +127,18 @@ To run the application code of the project you have to to the following steps:
 
 **Don't start a seperate jupyter server to run the notebook.**
 
+### Run Test Code
+
+1. Open the **Jupyter Notebook** web interface
+2. When prompted for a token type in `token`
+3. Navigate to `notebooks` > `tests.ipynb`
+4. Insert test data
+    1. Navigate to `notebooks` > `data` > `parquet_test`
+    2. Download the ZIP file from [bwSync&Share](https://bwsyncandshare.kit.edu/s/QTKj5jtPEH3KMkF)
+    3. Extract the parquet files into the `parquet_test` directory
+4. If you previously ran the main code, you need to **restart the kernel**
+5. Run the code cells in the notebook
+
 ## Documentation
 
 ### Spark
@@ -131,6 +147,18 @@ To run the application code of the project you have to to the following steps:
 
 ### Jupyter
 
+## References
+
+The following components were taken from other sources, adapted, configured and integrated into this project:
+
+- [Superset](https://github.com/apache/superset)
+  - Docker compose file (foundation of `docker-compose.yml`)
+  - Startup scripts (`docker`)
+- [Spark](https://github.com/bitnami/containers/tree/main/bitnami/spark)
+  - Docker image for Spark Master & Workers
+- [Jupyter](https://github.com/jupyter/docker-stacks/tree/main/images/pyspark-notebook)
+  - Docker image for Jupyter Notebook
+  - Includes an installation of Spark
 
 <!---
 ## Notes
