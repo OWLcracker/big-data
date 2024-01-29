@@ -13,7 +13,7 @@
 - [ ] Tests ausführen
 - [ ] Jupyter Notebook Markdown Erklärungen
 - [ ] Diagramme von Testergebnissen
-- [ ] Daten bereitstellen & Einfügen ermöglichen
+- [x] Daten bereitstellen & Einfügen ermöglichen
 - [ ] Github Readme
     - [x] Nutzungsanleitung anpassen -> Daten reinziehen, Kernel restarten
     - [x] References (Superset Docker Compose, Bitnami Docker Images)
