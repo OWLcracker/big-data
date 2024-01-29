@@ -160,5 +160,11 @@ cython_debug/
 .idea/
 /notebooks/metastore/
 /notebooks/derby.log
-/notebooks/data/
+/notebooks/data/*
+!/notebooks/data/parquet_main/
+/notebooks/data/parquet_main/*
+!/notebooks/data/parquet_main/.gitkeep
+!/notebooks/data/parquet_scaling/
+/notebooks/data/parquet_scaling/*
+!/notebooks/data/parquet_scaling/.gitkeep
 /backup

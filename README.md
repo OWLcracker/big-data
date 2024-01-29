@@ -2,6 +2,42 @@
 
 <!--- TODO: add short summary of the project --->
 
+## TODO
+- [] Tests erstellen
+   - [] Scalability (load, queries) -> Gleiche Datenmenge, alles In-Memory, Requests in parallelen Threads, Average pro Request
+   - [] Scalability (n worker) -> Gleiches Setup, unterschiedliche Anzahl an Worker, alles In-Memory
+   - [] Scalability (data) -> Unterschiedliche Datenmengen, RAM als bottleneck
+   - [] Fault tolerance (kill worker)
+- [] Tests ausführen
+- [] Jupyter Notebook Markdown Erklärungen
+- [] Diagramme von Testergebnissen
+- [] Daten bereitstellen & Einfügen ermöglichen
+- [] Github Readme
+  - [] Nutzungsanleitung anpassen -> Daten reinziehen, Kernel restarten
+  - [] References (Superset Docker Compose, Bitnami Docker Images)
+  - [] Untersuchungen/Erläuterungen in Readme integrieren 
+- [] Erläuterungen
+  - [] Prototyp
+     - [] Architektur
+     - [] Workflow
+     - [] Superset Dashboard
+  - [] Case
+    - Big Data (Warum Big Data Case? Warum nicht mit traditionellen Lösungen umsetzbar) 
+    - Verteilung, Parallelisierung, Skalierbarkeit, Fault Tolerance, Data Storage
+    - Shortcuts/Limitations
+  - [] Skalierbarkeit
+    - Auswirkung zusätzlicher Daten/Queries ~ Ressourcen
+    - Datenfluss (IO-/Memory-/CPU-bound)
+    - Skalierbarkeit der einzelnen Abschnitte
+    - Partitionierung
+    - Dimensionierung für Realität (Kosten, Aufwand, Expertenwissen, Hardware)
+  - [] Fault Tolerance
+    - Verhalten bei Fehlern (kill Node)
+    - Verhalten Netzwerkunterbrechung
+    - Auswirkung von Fehleroleranzmechanismen auf System
+- [] Ausblick
+  - [] Reale Architektur (inkl. beteiligter Personen, Komponenten, Hardware) -> Parquet File(s) in HDFS Cluster
+
 ## Table of Contents
 
 1. [Getting Started](#getting-started)
@@ -94,6 +130,7 @@ To run the application code of the project you have to to the following steps:
 ### Superset
 
 ### Jupyter
+
 
 <!---
 ## Notes
