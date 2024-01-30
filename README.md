@@ -175,7 +175,7 @@ For the second case, the data is processed in an aggregated form.
 
 The steps are the same as in the first case, except that the data is aggregated before it is cached.
 The aggregation depends on the needs of the user. A data scientist can then decide how the data should be aggregated.
-Subsequently, the data is cached and provisioned as a global temporary view in Spark like in the first case.
+Subsequently, only the aggregated data is cached and provisioned as a global temporary view in Spark like in the first case.
 
 **Request from SuperSet**
 ![Request from SuperSet](./misc/diagramms/Fluss/SuperSetFluss.png)
