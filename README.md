@@ -139,6 +139,8 @@ To run the application code of the project you have to to the following steps:
 4. If you previously ran the main code, you need to **restart the kernel**
 5. Run the code cells in the notebook
 
+** We recommend not to run the test code, as the execution can take up to a full day.**
+
 ## Documentation
 
 ### Architecture
