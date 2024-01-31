@@ -297,7 +297,10 @@ This is because the Thrift Server is a single instance that is not distributed. 
 to either find a way to scale the Thrift Server horizontally or to find an alternative to the Thrift Server.
 
 **No HDFS:**  
-The data is stored in the local file system. This means that the data is not distributed and therefore not fault-tolerant.
+The data is stored in the local file system. This means that the data is not distributed and therefore not fault-tolerant
+as well as an I/O bottleneck. This is because the data is not distributed and therefore only accessible from the local
+file system. Furthermore, the data is not fault-tolerant because the data is not replicated. This means that if the
+data is lost, it is lost forever.
 This is not recommended for production use. However, this was done because the researchers didn't have access to and 
 the time to set up a HDFS cluster. But it should be further investigated if a HDFS cluster is beneficial for this project
 or if another fault-tolerant distributed file system is more suitable.
