@@ -5,10 +5,10 @@
 ## TODO
 
 - [ ] Tests erstellen
-    - [ ] Scalability (load, queries) -> Gleiche Datenmenge, alles In-Memory, Requests in parallelen Threads, Average
+    - [X] Scalability (load, queries) -> Gleiche Datenmenge, alles In-Memory, Requests in parallelen Threads, Average
       pro Request
-    - [ ] Scalability (n worker) -> Gleiches Setup, unterschiedliche Anzahl an Worker, alles In-Memory
-    - [ ] Scalability (data) -> Unterschiedliche Datenmengen, RAM als bottleneck
+    - [X] Scalability (n worker) -> Gleiches Setup, unterschiedliche Anzahl an Worker, alles In-Memory
+    - [X] Scalability (data) -> Unterschiedliche Datenmengen, RAM als bottleneck
     - [ ] Fault tolerance (kill worker)
 - [ ] Tests ausführen
 - [ ] Jupyter Notebook Markdown Erklärungen
@@ -20,8 +20,8 @@
     - [ ] Untersuchungen/Erläuterungen in Readme integrieren
 - [ ] Erläuterungen
     - [ ] Prototyp
-        - [ ] Architektur
-        - [ ] Workflow
+        - [X] Architektur(NC)
+        - [X] Workflow (NC)
         - [ ] Superset Dashboard
     - [ ] Case
         - Big Data (Warum Big Data Case? Warum nicht mit traditionellen Lösungen umsetzbar)
@@ -62,7 +62,7 @@
 To run the project you need to have [Docker](https://www.docker.com/get-started/) (including docker compose) installed
 and running on your machine.
 
-Additional make sure your are using WSL if you're running on Windows:
+Additionally, make sure you are using WSL if you're running on Windows:
 
 - Open docker desktop
 - Navigate to `Settings` > `General`
@@ -144,10 +144,36 @@ To run the application code of the project you have to to the following steps:
 ## Documentation
 
 ### Architecture
+This section describes the architecture of the application.
+![Architecture](misc/diagramms/Architectur/Architectur.png)
+
+The application is managed through a docker-compose environment. This environment consists of the following relevant
+main components: **Apache Superset**, **Apache Spark Cluster**, **Jupyter Server**, **Thrift Server**.
+
+**Apache Superset** is a data exploration and visualization web application. It is used to visualize the data processed
+by Spark. If data is required for a visualization, a SQL-Query is sent to the Thrift Server.
+
+**Apache Spark** is a distributed processing framework. It is used to process the data from the GDELT dataset.
+Spark runs distributed in multiple containers with different roles. The **Spark Driver** is the main coordinator of the
+application. It is responsible for scheduling the Jobs and catering to the requests from Superset. The **Spark Master**
+is the main cluster coordinator of the worker nodes in the standalone deployment mode. The **Spark Worker** is a node
+in the cluster that can run tasks and keep data in memory or disk storage across them. Both the Master and the Worker
+work in tandem with the driver to run tasks.
+
+**Thrift Server** is a server that enables JDBC/ODBC clients to execute SQL queries against Apache Spark.
+In this case, the Thrift Server is used to enable Superset to access the data in Spark. If a SQL-Query is sent to the
+Thrift Server, a new Spark job will be triggered. The Spark job will then retrieve the data from the cache and process
+it according to the SQL-Statement. The processed data will then be returned to the Thrift Server and then to Superset.
+
+**Jupyter Server** is a web application that allows you to create and share documents that contain live code, equations,
+visualizations and narrative text. It is used to run the application code of the project. The application code is
+written in a Jupyter Notebook. The Jupyter Server is also used to run the test code of the project.
+Furthermore, the Jupyter Notebook is used to document the project and run the Spark Driver and Thrift Server.
+Both the Thrift Server and the Spark Driver are started in the Jupyter Notebook because they are required to 
+run in the same Spark Context.
 
 ### Workflow
 This section describes the general workflow of the application.
-
 
 **Download Data**
 ![Download Data](./misc/diagramms/Fluss/DownloadFluss.png)
