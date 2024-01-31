@@ -296,14 +296,15 @@ This means that the Thrift Server currently is a bottleneck and single point of 
 This is because the Thrift Server is a single instance that is not distributed. Future research would be necessary
 to either find a way to scale the Thrift Server horizontally or to find an alternative to the Thrift Server.
 
-**No HDFS:**  
-The data is stored in the local file system. This means that the data is not distributed and therefore not fault-tolerant
-as well as an I/O bottleneck. This is because the data is not distributed and therefore only accessible from the local
-file system. Furthermore, the data is not fault-tolerant because the data is not replicated. This means that if the
+**Storage on Local File System:**  
+The data is stored in the local file system, which means that the data is neither replicated nor distributed to different nodes, like it would be if a distributed file system like HDFS were used. 
+Therefore the data storage constitutes a single point of failure as well as an I/O bottleneck.
+This decreases the performance and the scalability of the solution significantly, because Spark can't read the data properly in parallel.
+Furthermore, the data is not fault-tolerant because there is no replication, which means that if the
 data is lost, it is lost forever.
-This is not recommended for production use. However, this was done because the researchers didn't have access to and 
-the time to set up a HDFS cluster. But it should be further investigated if a HDFS cluster is beneficial for this project
-or if another fault-tolerant distributed file system is more suitable.
+This solution is not recommended for production use and was only chosen because of time constraints and the additional complexity
+the integration of a distributed file system would introduce. It should be further investigated if a HDFS cluster is beneficial for this project
+or if another fault-tolerant distributed file system is a more suitable solution.
 
 **Insufficient hardware for test:**
 The researchers didn't have access to a cluster with sufficient hardware to test the scalability of the application.
