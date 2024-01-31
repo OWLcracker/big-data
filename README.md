@@ -14,10 +14,10 @@
 - [ ] Jupyter Notebook Markdown Erklärungen
 - [ ] Diagramme von Testergebnissen
 - [x] Daten bereitstellen & Einfügen ermöglichen
-- [ ] Github Readme
-    - [ ] Overview
-    - [ ] Both Cases explained
-    - [x] Nutzungsanleitung anpassen -> Daten reinziehen, Kernel restarten
+- [ ] GitHub Readme
+    - [x] Overview (NC)
+    - [x] Both Cases explained (NC)
+    - [x] Nutzungsanleitung anpassen -> Daten hereinziehen, Kernel restarten
     - [x] References (Superset Docker Compose, Bitnami Docker Images)
     - [ ] Untersuchungen/Erläuterungen in Readme integrieren
 - [ ] Erläuterungen
@@ -38,7 +38,7 @@
     - [ ] Fault Tolerance
         - Verhalten bei Fehlern (kill Node)
         - Verhalten Netzwerkunterbrechung
-        - Auswirkung von Fehleroleranzmechanismen auf System
+        - Auswirkung von Fehlertoleranzmechanismen auf System
 - [ ] Ausblick
     - [ ] Reale Architektur (inkl. beteiligter Personen, Komponenten, Hardware) -> Parquet File(s) in HDFS Cluster
 
@@ -48,7 +48,10 @@
 This is the Big-Date Project of the course "Big Data" from Tom Schuck and Kilian Kempf at the Hochschule Karlsruhe(HKA).
 The goal of this project is to process the [GDELT 2.0 Event Database](http://data.gdeltproject.org/gdeltv2/masterfilelist.txt)
 with Apache Spark and visualize the results with Apache Superset. The GDELT 2.0-Event Database is a dataset that contains
-over one billion records of events from around the world. The events are collected from news articles and are updated daily.
+over one billion records of events from around the world. The events are collected from news articles and are updated daily
+in 15-minute intervals. With the help of this dataset, it is possible to analyze and visualize the events that have taken
+place in the world in the recent history. For example, the data can be used to analyze the events that where connected to the
+war in ukraine or the events that where connected to the corona pandemic.
 The dataset is available in CSV format and can be downloaded from the [GDELT website](https://www.gdeltproject.org/).
 
 The project is divided into two cases. In the first case, the data is processed in a non-aggregated form.
@@ -68,7 +71,8 @@ In the following, both cases are explained in more detail.
 The approach of the first case is to process the data in a non-aggregated form. The idea is to process the data in a way
 that the data analyst can decide how the data should be aggregated for the visualization through the use of
 SQL-Statements in Superset. The advantage of this approach is that the data analyst can decide how the data should be
-aggregated. Furthermore, no data is lost to aggregation and can be displayed on demand in superset.
+aggregated. Furthermore, no data is lost to aggregation and can be displayed on demand in superset utilizing the
+preprocessed data which is kept in memory in spark.
 This enables the data analyst to create visualizations that are tailored to his needs on the fly.
 This is achieved by caching and processing the data in Spark. The drawback is that the data needs to be processed
 every time a visualization is created or loaded. This can take a relatively long time depending on the size of the data.
@@ -80,6 +84,16 @@ is that the data is already aggregated and can be visualized immediately. This i
 the data in Spark. The drawback is that the data needs to be processed again every time the data changes. Furthermore,
 the data analyst cannot decide how the data should be aggregated. This means that the data analyst has to request a new
 aggregation from the data engineer every time he wants to create a new visualization.
+
+### Example Use Case
+This project was developed with the example use case to analyze the goldstein scale of the GDELT dataset for each country.
+The goldstein scale is a scale that measures the impact of an event. The scale ranges from -10 to +10. The higher the
+value, the more positive the impact of the event. The lower the value, the more negative the impact of the event.
+
+The goal was to visualize a world heat map that shows the goldstein scale for each country. The visualization should
+also be interactive. This means that the user should be able to filter the data by date and country. Furthermore, the
+user should be able to select a country and see the top 5 events for that country. With this a user can for example
+analyze the impact of the corona pandemic on a country.
 
 ## Table of Contents
 
