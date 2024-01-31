@@ -109,7 +109,8 @@ and will be discussed in this project.
 ## Table of Contents
 
 1. [Getting Started](#getting-started)
-    - [Prerequisites](#prerequesites)
+    - [Prerequisites](#prerequisites)
+    - [Configuration](#configuration)
     - [Setup](#setup)
 2. [Usage](#usage)
     - [Web Interfaces](#web-interfaces)
@@ -123,7 +124,7 @@ and will be discussed in this project.
 
 ## Getting Started
 
-### Prerequesites
+### Prerequisites
 
 To run the project you need to have [Docker](https://www.docker.com/get-started/) (including docker compose) installed
 and running on your machine.
@@ -142,6 +143,29 @@ Additionally you need to allow docker to access the files in this repository:
 - Navigate to `Settings` > `Ressources` > `File sharing`
 - Add the file path to the repository 
 --->
+
+### Configuration
+
+The spark cluster has the following configuration by default:
+
+| Item      | Ressources        | Total Ressources (in cluster) |
+|-----------|-------------------|-------------------------------|
+| Workers   | 3                 | 3                             |
+| Executors | 2 per Worker      | 6                             |
+| RAM       | 2 GB per Executor | 12 GB                         |
+| Cores     | 1 per Executor    | 6                             |
+
+This configuration was set as default, to ensure that the project can be run on most machines.
+
+If you want to change the configuration, you can do so by navigating to `config` and adjust the following files:
+
+- `spark-defaults.conf`: Contains configuration regarding the executors (total number of executors, RAM & cores per
+  executor).
+- `.env-spark`: Contains configuration regarding the workers (RAM & cores per worker) and must be set according to the
+  executor configuration. E.g. the amount of RAM per worker must equal the amount of RAM per executor multiplied by the
+  number of executors per worker.
+
+However the tests were executed with more memory assigned to the workers (see `tests.py`).
 
 ### Setup
 
@@ -205,7 +229,7 @@ To run the application code of the project you have to to the following steps:
 4. If you previously ran the main code, you need to **restart the kernel**
 5. Run the code cells in the notebook
 
-** We recommend not to run the test code, as the execution can take up to a full day.**
+**We recommend not to run the test code, as the execution can take up a full day and even longer.**
 
 ## Documentation
 
