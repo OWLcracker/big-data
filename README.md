@@ -44,6 +44,7 @@
 
 1. [Getting Started](#getting-started)
     - [Prerequesites](#prerequesites)
+    - [Configuration](#configuration)
     - [Setup](#setup)
 2. [Usage](#usage)
     - [Web Interfaces](#web-interfaces)
@@ -76,6 +77,29 @@ Additionally you need to allow docker to access the files in this repository:
 - Navigate to `Settings` > `Ressources` > `File sharing`
 - Add the file path to the repository 
 --->
+
+### Configuration
+
+The spark cluster has the following configuration by default:
+
+| Item      | Ressources        | Total Ressources (in cluster) |
+|-----------|-------------------|-------------------------------|
+| Workers   | 3                 | 3                             |
+| Executors | 2 per Worker      | 6                             |
+| RAM       | 2 GB per Executor | 12 GB                         |
+| Cores     | 1 per Executor    | 6                             |
+
+This configuration was set as default, to ensure that the project can be run on most machines.
+
+If you want to change the configuration, you can do so by navigating to `config` and adjust the following files:
+
+- `spark-defaults.conf`: Contains configuration regarding the executors (total number of executors, RAM & cores per
+  executor).
+- `.env-spark`: Contains configuration regarding the workers (RAM & cores per worker) and must be set according to the
+  executor configuration. E.g. the amount of RAM per worker must equal the amount of RAM per executor multiplied by the
+  number of executors per worker.
+
+However the tests were executed with more memory assigned to the workers (see `tests.py`).
 
 ### Setup
 
@@ -139,20 +163,21 @@ To run the application code of the project you have to to the following steps:
 4. If you previously ran the main code, you need to **restart the kernel**
 5. Run the code cells in the notebook
 
-** We recommend not to run the test code, as the execution can take up to a full day.**
+**We recommend not to run the test code, as the execution can take up a full day and even longer.**
 
 ## Documentation
 
 ### Architecture
 
 ### Workflow
-This section describes the general workflow of the application.
 
+This section describes the general workflow of the application.
 
 **Download Data**
 ![Download Data](./misc/diagramms/Fluss/DownloadFluss.png)
 At first, it is necessary to download the necessary data from the GDELT server.
-The basis is the [GDELT 2.0 Event Database](http://data.gdeltproject.org/gdeltv2/masterfilelist.txt) which is available in CSV format.
+The basis is the [GDELT 2.0 Event Database](http://data.gdeltproject.org/gdeltv2/masterfilelist.txt) which is available
+in CSV format.
 The CSV files are downloaded in a compressed form and then extracted.
 
 After extraction, the CSV files will be converted into the parquet format through parallel and distributed processing
@@ -161,11 +186,11 @@ The parquet files will then be stored in the local file system.
 
 **Process Data(Non Aggregated)**
 ![Process Data(Non Aggregated)](./misc/diagramms/Fluss/NonAggFluss.png)
-For the first case, the data is processed in a non-aggregated form. 
+For the first case, the data is processed in a non-aggregated form.
 
 The data is loaded from the local file system into Spark. After that, the data is cleaned, so that
 only the usable data remains. Thereafter, an additional column will be joined to the data,
-which contains the country codes in the FIPS 10-4 standard. This is necessary because the country codes 
+which contains the country codes in the FIPS 10-4 standard. This is necessary because the country codes
 which are used in the GDELT dataset are in the ISO 3166-1 alpha-2 standard which is not supported by Superset.
 
 Afterward, the data will be cleaned again and then cached and provisioned as a global temporary view in Spark.
@@ -177,13 +202,15 @@ For the second case, the data is processed in an aggregated form.
 
 The steps are the same as in the first case, except that the data is aggregated before it is cached.
 The aggregation depends on the needs of the user. A data scientist can then decide how the data should be aggregated.
-Subsequently, only the aggregated data is cached and provisioned as a global temporary view in Spark like in the first case.
+Subsequently, only the aggregated data is cached and provisioned as a global temporary view in Spark like in the first
+case.
 
 **Request from SuperSet**
 ![Request from SuperSet](./misc/diagramms/Fluss/SuperSetFluss.png)
 Another component of the application is the Apache Superset dashboard. This dashboard is used to visualize
-the data processed by Spark. The dashboard is connected to the Spark Thrift Server. 
-This enables the dashboard to access the data in Spark so that it can also utilize the distributed processing capabilities of Spark.
+the data processed by Spark. The dashboard is connected to the Spark Thrift Server.
+This enables the dashboard to access the data in Spark so that it can also utilize the distributed processing
+capabilities of Spark.
 
 If a dashboard is opened, a request including a SQL-Statement is sent to the Thrift Server.
 The Thrift Server then processes the SQL-Statement and looks for the data in the specified global temporary view.
@@ -197,13 +224,13 @@ The dashboard then can utilize the returned data to visualize it according to th
 The following components were taken from other sources, adapted, configured and integrated into this project:
 
 - [Superset](https://github.com/apache/superset)
-  - Docker compose file (foundation of `docker-compose.yml`)
-  - Startup scripts (`docker`)
+    - Docker compose file (foundation of `docker-compose.yml`)
+    - Startup scripts (`docker`)
 - [Spark](https://github.com/bitnami/containers/tree/main/bitnami/spark)
-  - Docker image for Spark Master & Workers
+    - Docker image for Spark Master & Workers
 - [Jupyter](https://github.com/jupyter/docker-stacks/tree/main/images/pyspark-notebook)
-  - Docker image for Jupyter Notebook
-  - Includes an installation of Spark
+    - Docker image for Jupyter Notebook
+    - Includes an installation of Spark
 
 <!---
 ## Notes
