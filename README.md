@@ -41,6 +41,10 @@
         - Auswirkung von Fehlertoleranzmechanismen auf System
 - [ ] Ausblick
     - [ ] Reale Architektur (inkl. beteiligter Personen, Komponenten, Hardware) -> Parquet File(s) in HDFS Cluster
+- [ ] Analyse
+    - [ ] Limitierungen
+      - [ ] Thrift Server
+      - [ ] No HDFS
 
 ------------------------------------------------------------------------------------------------------------------------
 
@@ -279,6 +283,29 @@ Retrieving data from the global temporary view will trigger a new Spark job.
 The Spark job will then retrieve the data from the cache and process it according to the SQL-Statement.
 The processed data will then be returned to the Thrift Server and then to the dashboard.
 The dashboard then can utilize the returned data to visualize it according to the user's needs.
+
+## Analysis
+
+### Limitations
+
+**Thrift Server:**  
+The Thrift Server is a component of Spark that enables JDBC/ODBC clients to execute SQL queries against Apache Spark.
+During the development of this project, the researchers weren't able to discover a way to scale the Thrift Server
+horizontally. Especially because it was a requirement that the Thrift Sever can access cached Temporary Views.
+This means that the Thrift Server currently is a bottleneck and single point of failure in the application. 
+This is because the Thrift Server is a single instance that is not distributed. Future research would be necessary
+to either find a way to scale the Thrift Server horizontally or to find an alternative to the Thrift Server.
+
+**No HDFS:**  
+The data is stored in the local file system. This means that the data is not distributed and therefore not fault-tolerant.
+This is not recommended for production use. However, this was done because the researchers didn't have access to and 
+the time to set up a HDFS cluster. But it should be further investigated if a HDFS cluster is beneficial for this project
+or if another fault-tolerant distributed file system is more suitable.
+
+**Insufficient hardware for test:**
+The researchers didn't have access to a cluster with sufficient hardware to test the scalability of the application.
+The hardware used was a single machine with 32GB of RAM and 12 cores. This means that the scalability of the application
+could not be tested properly so that some approximations and assumptions had to be made.
 
 ## References
 
