@@ -15,6 +15,8 @@
 - [ ] Diagramme von Testergebnissen
 - [x] Daten bereitstellen & Einfügen ermöglichen
 - [ ] Github Readme
+    - [ ] Overview
+    - [ ] Both Cases explained
     - [x] Nutzungsanleitung anpassen -> Daten reinziehen, Kernel restarten
     - [x] References (Superset Docker Compose, Bitnami Docker Images)
     - [ ] Untersuchungen/Erläuterungen in Readme integrieren
@@ -40,10 +42,49 @@
 - [ ] Ausblick
     - [ ] Reale Architektur (inkl. beteiligter Personen, Komponenten, Hardware) -> Parquet File(s) in HDFS Cluster
 
+------------------------------------------------------------------------------------------------------------------------
+
+## Overview
+This is the Big-Date Project of the course "Big Data" from Tom Schuck and Kilian Kempf at the Hochschule Karlsruhe(HKA).
+The goal of this project is to process the [GDELT 2.0 Event Database](http://data.gdeltproject.org/gdeltv2/masterfilelist.txt)
+with Apache Spark and visualize the results with Apache Superset. The GDELT 2.0-Event Database is a dataset that contains
+over one billion records of events from around the world. The events are collected from news articles and are updated daily.
+The dataset is available in CSV format and can be downloaded from the [GDELT website](https://www.gdeltproject.org/).
+
+The project is divided into two cases. In the first case, the data is processed in a non-aggregated form.
+In the second case, the data is processed in an aggregated form. The aggregation depends on the needs of the user.
+
+The project is implemented in Python and uses the following technologies:
+- [Apache Spark](https://spark.apache.org/)
+- [Apache Superset](https://superset.apache.org/)
+- [Jupyter Notebook](https://jupyter.org/)
+- [Docker](https://www.docker.com/)
+- [Docker Compose](https://docs.docker.com/compose/)
+- [Thrift Server](https://spark.apache.org/docs/latest/sql-distributed-sql-engine.html)
+
+In the following, both cases are explained in more detail.
+
+### Case 1: Non-Aggregated Data
+The approach of the first case is to process the data in a non-aggregated form. The idea is to process the data in a way
+that the data analyst can decide how the data should be aggregated for the visualization through the use of
+SQL-Statements in Superset. The advantage of this approach is that the data analyst can decide how the data should be
+aggregated. Furthermore, no data is lost to aggregation and can be displayed on demand in superset.
+This enables the data analyst to create visualizations that are tailored to his needs on the fly.
+This is achieved by caching and processing the data in Spark. The drawback is that the data needs to be processed
+every time a visualization is created or loaded. This can take a relatively long time depending on the size of the data.
+
+### Case 2: Aggregated Data
+The approach of the second case is to process the data in an aggregated form. The idea is to process the data in a way
+that the necessary aggregations for the visualization are already done and kept in memory. The advantage of this approach
+is that the data is already aggregated and can be visualized immediately. This is achieved by caching and processing
+the data in Spark. The drawback is that the data needs to be processed again every time the data changes. Furthermore,
+the data analyst cannot decide how the data should be aggregated. This means that the data analyst has to request a new
+aggregation from the data engineer every time he wants to create a new visualization.
+
 ## Table of Contents
 
 1. [Getting Started](#getting-started)
-    - [Prerequesites](#prerequesites)
+    - [Prerequisites](#prerequesites)
     - [Setup](#setup)
 2. [Usage](#usage)
     - [Web Interfaces](#web-interfaces)
