@@ -92,8 +92,15 @@ value, the more positive the impact of the event. The lower the value, the more 
 
 The goal was to visualize a world heat map that shows the goldstein scale for each country. The visualization should
 also be interactive. This means that the user should be able to filter the data by date and country. Furthermore, the
-user should be able to select a country and see the top 5 events for that country. With this a user can for example
+user should be able to select a country and see the top 5 events for that country. With this, a user can, for example,
 analyze the impact of the corona pandemic on a country.
+
+This use case was implemented in both cases.
+Regarding the implementation of the first case, the data was just preprocessed and cached in Spark without any
+aggregation. For the second case, the data was preprocessed and aggregated by the goldstein scale per country per day.
+
+Both ways enable the user to create the desired visualization. However, which approach is better depends on the use case
+and will be discussed in this project.
 
 ## Table of Contents
 
