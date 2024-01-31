@@ -306,7 +306,7 @@ This solution is not recommended for production use and was only chosen because 
 the integration of a distributed file system would introduce. It should be further investigated if a HDFS cluster is beneficial for this project
 or if another fault-tolerant distributed file system is a more suitable solution.
 
-**Insufficient hardware for test:**
+**Insufficient Hardware for Tests:**
 The researchers didn't have access to a cluster with sufficient hardware to test the scalability of the application.
 The hardware used was a single machine with 32GB of RAM and 12 cores. This means that the scalability of the application
 could not be tested properly so that some approximations and assumptions had to be made.
