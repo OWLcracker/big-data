@@ -141,11 +141,54 @@ To run the application code of the project you have to to the following steps:
 
 ## Documentation
 
-### Spark
+### Architecture
 
-### Superset
+### Workflow
+This section describes the general workflow of the application.
 
-### Jupyter
+
+**Download Data**
+![Download Data](./misc/diagramms/Fluss/DownloadFluss.png)
+At first, it is necessary to download the necessary data from the GDELT server.
+The basis is the [GDELT 2.0 Event Database](http://data.gdeltproject.org/gdeltv2/masterfilelist.txt) which is available in CSV format.
+The CSV files are downloaded in a compressed form and then extracted.
+
+After extraction, the CSV files will be converted into the parquet format through parallel and distributed processing
+using Spark. The parquet format is a columnar storage format that is optimized for analytics workloads.
+The parquet files will then be stored in the local file system.
+
+**Process Data(Non Aggregated)**
+![Process Data(Non Aggregated)](./misc/diagramms/Fluss/NonAggFluss.png)
+For the first case, the data is processed in a non-aggregated form. 
+
+The data is loaded from the local file system into Spark. After that, the data is cleaned, so that
+only the usable data remains. Thereafter, an additional column will be joined to the data,
+which contains the country codes in the FIPS 10-4 standard. This is necessary because the country codes 
+which are used in the GDELT dataset are in the ISO 3166-1 alpha-2 standard which is not supported by Superset.
+
+Afterward, the data will be cleaned again and then cached and provisioned as a global temporary view in Spark.
+This enables the thrift server to access the data.
+
+**Process Data(Aggregated)**
+![Process Data(Aggregated)](./misc/diagramms/Fluss/AggFluss.png)
+For the second case, the data is processed in an aggregated form.
+
+The steps are the same as in the first case, except that the data is aggregated before it is cached.
+The aggregation depends on the needs of the user. A data scientist can then decide how the data should be aggregated.
+Subsequently, only the aggregated data is cached and provisioned as a global temporary view in Spark like in the first case.
+
+**Request from SuperSet**
+![Request from SuperSet](./misc/diagramms/Fluss/SuperSetFluss.png)
+Another component of the application is the Apache Superset dashboard. This dashboard is used to visualize
+the data processed by Spark. The dashboard is connected to the Spark Thrift Server. 
+This enables the dashboard to access the data in Spark so that it can also utilize the distributed processing capabilities of Spark.
+
+If a dashboard is opened, a request including a SQL-Statement is sent to the Thrift Server.
+The Thrift Server then processes the SQL-Statement and looks for the data in the specified global temporary view.
+Retrieving data from the global temporary view will trigger a new Spark job.
+The Spark job will then retrieve the data from the cache and process it according to the SQL-Statement.
+The processed data will then be returned to the Thrift Server and then to the dashboard.
+The dashboard then can utilize the returned data to visualize it according to the user's needs.
 
 ## References
 
