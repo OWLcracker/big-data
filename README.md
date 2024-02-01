@@ -4,13 +4,13 @@
 
 ## TODO
 
-- [ ] Tests erstellen
+- [X] Tests erstellen
     - [X] Scalability (load, queries) -> Gleiche Datenmenge, alles In-Memory, Requests in parallelen Threads, Average
       pro Request
     - [X] Scalability (n worker) -> Gleiches Setup, unterschiedliche Anzahl an Worker, alles In-Memory
     - [X] Scalability (data) -> Unterschiedliche Datenmengen, RAM als bottleneck
-    - [ ] Fault tolerance (kill worker)
-- [ ] Tests ausführen
+    - [X] Fault tolerance (kill worker)
+- [X] Tests ausführen
 - [ ] Jupyter Notebook Markdown Erklärungen
 - [ ] Diagramme von Testergebnissen
 - [x] Daten bereitstellen & Einfügen ermöglichen
@@ -43,8 +43,8 @@
     - [ ] Reale Architektur (inkl. beteiligter Personen, Komponenten, Hardware) -> Parquet File(s) in HDFS Cluster
 - [ ] Analyse
     - [ ] Limitierungen
-        - [ ] Thrift Server
-        - [ ] No HDFS
+        - [X] Thrift Server
+        - [X] No HDFS
 
 ------------------------------------------------------------------------------------------------------------------------
 
@@ -186,7 +186,7 @@ If you want to change the configuration, you can do so by navigating to `config`
   executor configuration. E.g., the amount of RAM per worker must equal the amount of RAM per executor multiplied by the
   number of executors per worker.
 
-The tests were executed with more memory assigned to the workers and excutors (see [Analysis](#analysis)).
+The tests were executed with more memory assigned to the workers and executors (see [Analysis](#analysis)).
 
 ### Setup
 
@@ -391,12 +391,12 @@ notebook.
 
 ### Data
 
-The dataset which was used for the analysis of this project contains all events from the GDELT 2.0 Event Database from
-July 2015 until December 2023 totalling in 102 months or 8.5 years worth of event data. As the events in the dataset
-date back to the 19th of February in 2015, almost the complete dataset was included in the analysis. Events that were
+The dataset which was used for the analysis of this project contains all events from the GDELT 2.0-Event Database from
+July 2015 until December 2023 totaling in 102 months or 8.5 years worth of event data. As the events in the dataset
+date back to the 19th of February in 2015, almost the complete dataset was included in the analysis. Events 
 recorded before February 2015 can be obtained from the GDELT 1.0 Event Database, which dates back to 1979. Because of
 the GDELT 2.0 dataset's size and the limited resources available for the analysis, the GDELT 1.0 dataset was not
-included in this project. In the following sections, mentions of a "complete" or "total" dataset refere to the 8.5 years
+included in this project. In the following sections, mentions of a "complete" or "total" dataset refer to the 8.5 years
 worth of event data utilized in the analysis.
 
 The GDELT 2.0 dataset is provided in CSV files and is generated and uploaded every 15 minutes. For use in the project,
@@ -428,22 +428,22 @@ case requires
 6.033 times more memory than the aggregated case. This has a significant impact on the hardware, which would be required
 for a cluster in a production scenario, resulting in significantly higher costs.
 
-Furthermore the table shows, that the total data size of the cached data is 2.28 times as large as the total size of the
+Furthermore, the table shows that the total data size of the cached data is 2.28 times as large as the total size of the
 Parquet files, which indicates that the data, once loaded into Spark and partitioned across nodes, can't be
 compressed as efficiently as it's done using Parquet files. This must also be considered when dimensioning the hardware
 for the aggregated case, when the complete dataset must be cached in memory.
 
 ### Scalability
 
-To analyze the scalability of the application, a number of tests were conducted. In these tests the effects of different
-parameters on the performance of the application were analyzed, by scaling individiual parameters while keeping the rest
+To analyze the scalability of the application, a number of tests were conducted. In these tests, the effects of different
+parameters on the performance of the application were analyzed by scaling individual parameters while keeping the rest
 of the environment constant. The effect on the performance on the aggregated and non-aggregated version of the 
-application was measured by running both versions seperately and measuring the following performance metrics:
+application was measured by running both versions separately and measuring the following performance metrics:
 
 - **Query Response Time**: The amount of time it takes for the application to process and successfully respond to an SQL
   query. This metric was chosen, because Superset sends SQL queries to the Thrift Server to retrieve data for
   visualizations.
-  Therefore the response time has a significant impact on the user experience, when using accessing the dashboard.
+  Therefore, the response time has a significant impact on the user experience, when using accessing the dashboard.
 - **Pre-processing Turnaround Time**: The amount of time it takes for the application to load the necessary data from
   the local file system into the Spark Cluster, pre-process it and cache it. This metric was chosen, because it
   represents a complete cycle of the application, from loading the data to making it available for SQL queries. This has
@@ -452,14 +452,14 @@ application was measured by running both versions seperately and measuring the f
 In the following sections the results of the tests are presented and analyzed, in which the parameters **Data Volume**,
 **Load** and **Resources** were scaled.
 
-Unless specified otherwise in the indiviudal test, the Spark Cluster was configured as follows for the test execution:
+Unless specified otherwise in the individual test, the Spark Cluster was configured as follows for the test execution:
 
-| Item      | Ressources        | Total Ressources (in cluster) |
-|-----------|-------------------|-------------------------------|
-| Workers   | 3                 | 3                             |
-| Executors | 2 per Worker      | 6                             |
-| RAM       | 3 GB per Executor | 18 GB                         |
-| Cores     | 1 per Executor    | 6                             |
+| Item      | Resources         | Total Resources (in cluster) |
+|-----------|-------------------|------------------------------|
+| Workers   | 3                 | 3                            |
+| Executors | 2 per Worker      | 6                            |
+| RAM       | 3 GB per Executor | 18 GB                        |
+| Cores     | 1 per Executor    | 6                            |
 
 #### Data Volume
 The following tests were conducted to analyze how an increasing amount of data impacts the performance of the 
@@ -468,15 +468,15 @@ which are loaded into the cluster and processed starting at July 2015 until the 
 (e.g. 1 month, 2 months, 3 months, ... of data). To minimize the total test duration, the measurements were done with 
 increasing data increments. Each measured value is depicted as a dot on the plotted lines in the following plots.
 It's also important to mention that the data volume of different months can vary. For that reason, the data volume of
-the months was calculated by adding the size of the included parquet files, to depict impact of the data volume more
+the months was calculated by adding the size of the included parquet files, to depict the impact of the data volume more
 accurately in the plots.
 
 The following plots illustrate the impact of an increasing data volume on the pre-processing response time of the 
 aggregated and non-aggregated version. The plot on the right side depicts an increase of data up to 1 year, while the 
 plot on the left side depicts an increase of data up to the complete dataset:
 
-<img src="./misc/plots/data_volume_turnaround_year.png" width="45%">
-<img src="./misc/plots/data_volume_turnaround_all.png" width="45%">
+<img src="./misc/plots/data_volume_turnaround_year.png" width="45%" alt="">
+<img src="./misc/plots/data_volume_turnaround_all.png" width="45%" alt="">
 
 In both cases, it can be clearly seen that the pre-processing turnaround time increases linearly with the data volume.
 This is expected for multiple reasons. First, the data volume is the main factor that impacts the time it takes to 
@@ -492,8 +492,8 @@ Comparing the aggregated and non-aggregated version, it can be
 The following plots illustrate the impact of an increasing data volume on the query response time of the 
 aggregated and non-aggregated version:
 
-<img src="./misc/plots/data_volume_response_year.png" width="45%">
-<img src="./misc/plots/data_volume_response_all.png" width="45%">
+<img src="./misc/plots/data_volume_response_year.png" width="45%" alt="">
+<img src="./misc/plots/data_volume_response_all.png" width="45%" alt="">
 
 #### Load
 
@@ -501,10 +501,10 @@ aggregated and non-aggregated version:
 
 ### Fault Tolerance
 
-<img src="./misc/screenshots/spark/stopped_workers_0.png" width="100%">
-<img src="./misc/screenshots/spark/stopped_workers_1.png" width="100%">
-<img src="./misc/screenshots/spark/stopped_workers_2.png" width="100%">
-<img src="./misc/plots/fault_tolerance_response.png" width="50%">
+<img src="./misc/screenshots/spark/stopped_workers_0.png" width="100%" alt="">
+<img src="./misc/screenshots/spark/stopped_workers_1.png" width="100%" alt="">
+<img src="./misc/screenshots/spark/stopped_workers_2.png" width="100%" alt="">
+<img src="./misc/plots/fault_tolerance_response.png" width="50%" alt="">
 
 ## Evaluation
 
