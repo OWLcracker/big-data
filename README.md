@@ -401,6 +401,12 @@ the data analyst can create visualizations that are tailored to his needs withou
 However, the drawback is that the data needs to be processed every time a visualization is created or loaded. This can
 take a relatively long time depending on the size of the data and can be quite resource-intensive.
 
+In terms of hardware, the first case is more expensive than the second case. This is because the data needs to be
+processed every time a visualization is created or loaded. This means that more data needs to be processed more often
+than in the second case and that significantly more memory is required. This is because the whole dataset is necessary and
+needs to be cached in memory to be processed quickly. So the first case is more expensive in terms of hardware but
+cheaper in terms of development costs.
+
 | Pros                     | Cons                 |
 |--------------------------|----------------------|
 | Independent              | Expensive            |
@@ -418,12 +424,19 @@ needs to be processed again every time the data changes. Furthermore, the data a
 be aggregated. This means that the data analyst has to request a new aggregation from a data engineer every time he
 wants to create a new visualization.
 
-| Pros                  | Cons                        |
-|-----------------------|-----------------------------|
-| Short execution times | Dependant on data engineer  |
-| Easy to work with     | Reprocessing on data change |
-| Cost efficient        |                             |
-| Resource efficient    |                             |
+In terms of hardware, the second case is cheaper than the first case. This is because the data is already aggregated and
+does not need to be processed extensively every time a visualization is created or loaded. The memory usage spikes
+only when aggregates are created and the data is cached. After that, the memory usage is way less than in the first case
+because the aggregated data is way smaller than the raw data. This is under the assumption that the aggregation is not
+time-critical and can be done in advance.
+So the second case is cheaper in terms of hardware but more expensive in terms of development costs.
+
+| Pros                  | Cons                          |
+|-----------------------|-------------------------------|
+| Short execution times | Dependant on data engineer    |
+| Easy to work with     | Reprocessing on data change   |
+| Cost efficient        | Aggregate creation takes time |
+| Resource efficient    |                               |
 
 ## Production Example & Recommendations
 
