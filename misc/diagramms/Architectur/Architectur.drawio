@@ -1,16 +1,19 @@
-<mxfile host="Electron" modified="2024-01-31T14:29:44.005Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/23.0.2 Chrome/120.0.6099.109 Electron/28.1.0 Safari/537.36" etag="IzU1S9GEx4DPrIQbtTRI" version="23.0.2" type="device">
+<mxfile host="Electron" modified="2024-02-01T16:55:16.272Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/23.0.2 Chrome/120.0.6099.109 Electron/28.1.0 Safari/537.36" etag="F4B0GnnDtINH_1iyWArE" version="23.0.2" type="device">
   <diagram name="Seite-1" id="tL0DDLGdbVWQin7-5K3Q">
-    <mxGraphModel dx="924" dy="601" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="2336" math="0" shadow="0">
+    <mxGraphModel dx="1047" dy="681" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="2336" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
+        <mxCell id="MwAB8pa6X5zpWCNBC2v1-28" value="" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="260" y="710" width="900" height="480" as="geometry" />
+        </mxCell>
         <mxCell id="0w6LrTufolvJsN6nTCpH-19" value="" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=JetBrainsMono Nerd Font;" parent="1" vertex="1">
           <mxGeometry x="720" y="190" width="360" height="370" as="geometry" />
         </mxCell>
         <mxCell id="0w6LrTufolvJsN6nTCpH-6" value="" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=JetBrainsMono Nerd Font;" parent="1" vertex="1">
           <mxGeometry x="330" y="190" width="370" height="280" as="geometry" />
         </mxCell>
-        <mxCell id="FaU7nUPEqN84nOcqx7xQ-3" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="FaU7nUPEqN84nOcqx7xQ-3" value="" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="500" y="210" width="170" height="240" as="geometry" />
         </mxCell>
         <mxCell id="0w6LrTufolvJsN6nTCpH-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;fontFamily=JetBrainsMono Nerd Font;" parent="1" source="0w6LrTufolvJsN6nTCpH-4" target="0w6LrTufolvJsN6nTCpH-11" edge="1">
@@ -51,7 +54,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="FaU7nUPEqN84nOcqx7xQ-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;startArrow=classic;startFill=1;" edge="1" parent="1" source="0w6LrTufolvJsN6nTCpH-7" target="0w6LrTufolvJsN6nTCpH-21">
+        <mxCell id="FaU7nUPEqN84nOcqx7xQ-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;startArrow=classic;startFill=1;" parent="1" source="0w6LrTufolvJsN6nTCpH-7" target="0w6LrTufolvJsN6nTCpH-21" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="0w6LrTufolvJsN6nTCpH-7" value="Spark Driver" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=JetBrainsMono Nerd Font;" parent="1" vertex="1">
@@ -75,29 +78,121 @@
         <mxCell id="0w6LrTufolvJsN6nTCpH-23" value="Spark Worker 2" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=JetBrainsMono Nerd Font;" parent="1" vertex="1">
           <mxGeometry x="930" y="370" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="FaU7nUPEqN84nOcqx7xQ-4" value="Spark Context" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=JetBrainsMono Nerd Font;" vertex="1" parent="1">
+        <mxCell id="FaU7nUPEqN84nOcqx7xQ-4" value="Spark Context" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=JetBrainsMono Nerd Font;" parent="1" vertex="1">
           <mxGeometry x="555" y="230" width="60" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="FaU7nUPEqN84nOcqx7xQ-5" value="Spark Cluster" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=JetBrainsMono Nerd Font;" vertex="1" parent="1">
+        <mxCell id="FaU7nUPEqN84nOcqx7xQ-5" value="Spark Cluster" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=JetBrainsMono Nerd Font;" parent="1" vertex="1">
           <mxGeometry x="730" y="200" width="110" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="FaU7nUPEqN84nOcqx7xQ-6" value="Jupyter Container" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=JetBrainsMono Nerd Font;" vertex="1" parent="1">
+        <mxCell id="FaU7nUPEqN84nOcqx7xQ-6" value="Jupyter Container" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=JetBrainsMono Nerd Font;" parent="1" vertex="1">
           <mxGeometry x="350" y="210" width="60" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="FaU7nUPEqN84nOcqx7xQ-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="FaU7nUPEqN84nOcqx7xQ-7" target="0w6LrTufolvJsN6nTCpH-4">
+        <mxCell id="FaU7nUPEqN84nOcqx7xQ-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="FaU7nUPEqN84nOcqx7xQ-7" target="0w6LrTufolvJsN6nTCpH-4" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="FaU7nUPEqN84nOcqx7xQ-7" value="Data Analyst" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontFamily=JetBrainsMono Nerd Font;" vertex="1" parent="1">
+        <mxCell id="FaU7nUPEqN84nOcqx7xQ-7" value="Data Analyst" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontFamily=JetBrainsMono Nerd Font;" parent="1" vertex="1">
           <mxGeometry x="250" y="490" width="30" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="FaU7nUPEqN84nOcqx7xQ-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="FaU7nUPEqN84nOcqx7xQ-11" target="0w6LrTufolvJsN6nTCpH-5">
+        <mxCell id="FaU7nUPEqN84nOcqx7xQ-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="FaU7nUPEqN84nOcqx7xQ-11" target="0w6LrTufolvJsN6nTCpH-5" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="FaU7nUPEqN84nOcqx7xQ-11" value="Data Engineer" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontFamily=JetBrainsMono Nerd Font;" vertex="1" parent="1">
+        <mxCell id="FaU7nUPEqN84nOcqx7xQ-11" value="Data Engineer" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontFamily=JetBrainsMono Nerd Font;" parent="1" vertex="1">
           <mxGeometry x="250" y="280" width="30" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="FaU7nUPEqN84nOcqx7xQ-16" value="&lt;font face=&quot;JetBrainsMono Nerd Font&quot;&gt;SQL-Query&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+        <mxCell id="FaU7nUPEqN84nOcqx7xQ-16" value="&lt;font face=&quot;JetBrainsMono Nerd Font&quot;&gt;SQL-Query&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
           <mxGeometry x="500" y="490" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="MwAB8pa6X5zpWCNBC2v1-1" value="" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=JetBrainsMono Nerd Font;" parent="1" vertex="1">
+          <mxGeometry x="720" y="750" width="410" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="MwAB8pa6X5zpWCNBC2v1-2" value="" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=JetBrainsMono Nerd Font;" parent="1" vertex="1">
+          <mxGeometry x="330" y="750" width="370" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="MwAB8pa6X5zpWCNBC2v1-39" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="MwAB8pa6X5zpWCNBC2v1-5" target="MwAB8pa6X5zpWCNBC2v1-34" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="MwAB8pa6X5zpWCNBC2v1-5" value="Superset&lt;br&gt;(m4.xlarge)" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=JetBrainsMono Nerd Font;" parent="1" vertex="1">
+          <mxGeometry x="330" y="1050" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="MwAB8pa6X5zpWCNBC2v1-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=JetBrainsMono Nerd Font;" parent="1" source="MwAB8pa6X5zpWCNBC2v1-8" target="MwAB8pa6X5zpWCNBC2v1-13" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="MwAB8pa6X5zpWCNBC2v1-8" value="Jupyter" style="whiteSpace=wrap;html=1;fontFamily=JetBrainsMono Nerd Font;" parent="1" vertex="1">
+          <mxGeometry x="360" y="810" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="MwAB8pa6X5zpWCNBC2v1-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontFamily=JetBrainsMono Nerd Font;" parent="1" source="MwAB8pa6X5zpWCNBC2v1-13" target="MwAB8pa6X5zpWCNBC2v1-16" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="800" y="840" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="MwAB8pa6X5zpWCNBC2v1-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;startArrow=classic;startFill=1;" parent="1" source="MwAB8pa6X5zpWCNBC2v1-13" target="MwAB8pa6X5zpWCNBC2v1-17" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="MwAB8pa6X5zpWCNBC2v1-13" value="Spark Driver" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=JetBrainsMono Nerd Font;" parent="1" vertex="1">
+          <mxGeometry x="530" y="810" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="MwAB8pa6X5zpWCNBC2v1-16" value="Spark Master&lt;br&gt;(m4.large)" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=JetBrainsMono Nerd Font;" parent="1" vertex="1">
+          <mxGeometry x="740" y="900" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="MwAB8pa6X5zpWCNBC2v1-17" value="Spark Worker 1&lt;br&gt;(r4.xlarge)" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=JetBrainsMono Nerd Font;" parent="1" vertex="1">
+          <mxGeometry x="930" y="810" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="MwAB8pa6X5zpWCNBC2v1-21" value="AWS EMR Cluster(EC2)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=JetBrainsMono Nerd Font;" parent="1" vertex="1">
+          <mxGeometry x="730" y="760" width="160" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="MwAB8pa6X5zpWCNBC2v1-22" value="Jupyter EC2 Instance(m4.xlarge)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=JetBrainsMono Nerd Font;" parent="1" vertex="1">
+          <mxGeometry x="340" y="760" width="140" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="MwAB8pa6X5zpWCNBC2v1-23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="MwAB8pa6X5zpWCNBC2v1-24" target="MwAB8pa6X5zpWCNBC2v1-5" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="MwAB8pa6X5zpWCNBC2v1-24" value="Data Analyst" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontFamily=JetBrainsMono Nerd Font;" parent="1" vertex="1">
+          <mxGeometry x="190" y="1050" width="30" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="MwAB8pa6X5zpWCNBC2v1-25" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="MwAB8pa6X5zpWCNBC2v1-26" target="MwAB8pa6X5zpWCNBC2v1-8" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="MwAB8pa6X5zpWCNBC2v1-26" value="Data Engineer" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontFamily=JetBrainsMono Nerd Font;" parent="1" vertex="1">
+          <mxGeometry x="190" y="810" width="30" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="MwAB8pa6X5zpWCNBC2v1-29" value="&lt;font face=&quot;JetBrainsMono Nerd Font&quot;&gt;AWS&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="260" y="720" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="MwAB8pa6X5zpWCNBC2v1-30" value="Spark Worker 1&lt;br&gt;(r4.xlarge)" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=JetBrainsMono Nerd Font;" parent="1" vertex="1">
+          <mxGeometry x="940" y="820" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="MwAB8pa6X5zpWCNBC2v1-31" value="Spark Worker 1&lt;br&gt;(r4.xlarge)" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=JetBrainsMono Nerd Font;" parent="1" vertex="1">
+          <mxGeometry x="950" y="830" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="MwAB8pa6X5zpWCNBC2v1-32" value="Spark Worker 4&lt;br&gt;(r4.xlarge)" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=JetBrainsMono Nerd Font;" parent="1" vertex="1">
+          <mxGeometry x="960" y="840" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="MwAB8pa6X5zpWCNBC2v1-36" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=classic;startFill=1;endArrow=none;endFill=0;" parent="1" source="MwAB8pa6X5zpWCNBC2v1-34" target="MwAB8pa6X5zpWCNBC2v1-32" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="MwAB8pa6X5zpWCNBC2v1-37" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;startArrow=classic;startFill=1;endArrow=none;endFill=0;" parent="1" source="MwAB8pa6X5zpWCNBC2v1-34" target="MwAB8pa6X5zpWCNBC2v1-16" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="750" y="1010" />
+              <mxPoint x="800" y="1010" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="MwAB8pa6X5zpWCNBC2v1-38" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;startArrow=classic;startFill=1;endArrow=none;endFill=0;" parent="1" source="MwAB8pa6X5zpWCNBC2v1-34" target="MwAB8pa6X5zpWCNBC2v1-13" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="750" y="1010" />
+              <mxPoint x="590" y="1010" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="MwAB8pa6X5zpWCNBC2v1-34" value="AWS Elastic Block Store&lt;br&gt;(~150 GB)" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=JetBrainsMono Nerd Font;" parent="1" vertex="1">
+          <mxGeometry x="650" y="1030" width="200" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="MwAB8pa6X5zpWCNBC2v1-45" value="&lt;font face=&quot;JetBrainsMono Nerd Font&quot;&gt;EC2-Legende: m4.xlarge(0.24 USD/H ; RAM: 16GB ; vCPUs: 4) m4.large(0.15 USD/H ; RAM: 8GB ; vCPUs: 2)&lt;br&gt;r4.xlarge(0.39 USD/H ; 30,5GB ; vCPUs: 4)&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="290" y="1140" width="860" height="30" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>

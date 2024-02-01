@@ -431,14 +431,67 @@ because the aggregated data is way smaller than the raw data. This is under the 
 time-critical and can be done in advance.
 So the second case is cheaper in terms of hardware but more expensive in terms of development costs.
 
-| Pros                  | Cons                          |
-|-----------------------|-------------------------------|
-| Short execution times | Dependant on data engineer    |
-| Easy to work with     | Reprocessing on data change   |
-| Cost efficient        | Aggregate creation takes time |
-| Resource efficient    |                               |
+| Pros                  | Cons                        |
+|-----------------------|-----------------------------|
+| Short execution times | Dependant on data engineer  |
+| Easy to work with     | Reprocessing on data change |
+| Cost efficient        | Aggregation takes time      |
+| Resource efficient    |                             |
 
 ## Production Example & Recommendations
+In this example, it is to be assumed that there is a company that wants to analyze the GDELT dataset in a way so that
+they can analyze the impact of global events on their and other businesses. 
+
+The company has a data science team that is responsible for analyzing the data and a data engineering team that is
+responsible for preparing the data in fitting aggregates for the data science team to analyze.
+
+Through the results of this project, the company decides to use the second case approach to analyze the data.
+This is because the second case is more cost-efficient and resource-efficient than the first case. Furthermore, they
+came to the conclusion that aggregated data is sufficient for their use case and that they don't need to analyze the
+data in a fine-grained way.
+
+The company decides to use the following architecture to analyze the data, which is based on the architecture of this
+project:  
+![Production Example](./misc/diagramms/Architectur/Architecture-AWS.png)
+
+The company decides to use AWS as their cloud provider.  
+The data is stored in Elastic Block Store (EBS) volumes.
+EBS volumes are block-level storage volumes that can be attached to EC2 instances. EBS volumes are highly available and
+redundant. This means that the data is fault-tolerant and can be recovered if a failure occurs. It is estimated that about
+150GB of data will be stored in the EBS volumes. This includes the raw data and the aggregated data. The businessdata
+will not be considered in this estimation. The data will be stored in the parquet format because it is a columnar storage
+format optimized for analytics workloads.
+
+The data engineering team will work with a m4.xlarge EC2 instance in which a Jupyter server is running. The Jupyter
+server is used to run the application code of the project. The instance is configured with 16GB of RAM and 4 vCPUs.
+
+Furthermore, will work with an AWS EMR cluster. EMR is a managed cluster platform that simplifies running big data
+frameworks, such as Apache Spark, Apache Hadoop, Apache Hive, and Apache Kafka, on AWS to process and analyze vast
+amounts of data. The EMR cluster will be configured with four r4.xlarge EC2 instances. Each instance will be configured
+with 30GB of RAM and 4 vCPUs. The master node will be a m4.large EC2 instance. The master node will be configured with
+8GB of RAM and 2 vCPUs.
+
+The data science team will work with a m4.xlarge EC2 instance in which a Jupyter server is running. The Jupyter server
+is used to run the application code of the project. The instance is configured with 16GB of RAM and 4 vCPUs.
+
+In this setup, the data engineering team will be responsible for preparing the data in fitting aggregates for the data
+science team to analyze. The data engineering team will use the Jupyter server to run the application code of the
+project. The data engineering team will also be responsible for managing the EMR cluster.
+The cluster will use the EBS volumes as storage so that it can access the raw preprocessed data. Furthermore, the cluster
+saves the aggregated data in the EBS volumes. This enables the data science team to access the aggregated data in Superset.
+
+It is estimated that the aggregated data will be small enough that big data frameworks like Spark are not necessary to
+process the data. Rather, the data can be processed with traditional data processing frameworks like Pandas or SuperSet.
+
+The cost of this setup is estimated to be about 786.18$ per month. This includes the costs for the EBS volumes, the
+EC2 instances, and the EMR cluster. The costs for the EBS volumes are estimated to be about 17.85$ per month. The costs
+for the EC2 instances are estimated to be about 175.20$ per month. The costs for the EMR cluster are estimated to be
+about 593.13$ per month. The costs for the EMR cluster are estimated to be so high because the cluster is configured with
+a lot of memory. This is because the cluster needs to be able to process the whole dataset at once. The costs for the
+EMR cluster could be reduced by using a smaller cluster and processing the data in batches. However, this would increase
+the time it takes to process the data. The costs for the Cluster were calculated with the rough estimation that
+they will be running for about 10 hours per day. The costs for the SuperSet instance were calculated with 24 hours per
+day.
 
 ## Conclusion
 
