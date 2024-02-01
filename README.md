@@ -329,14 +329,16 @@ This is because the Thrift Server is a single instance that is not distributed. 
 to either find a way to scale the Thrift Server horizontally or to find an alternative to the Thrift Server.
 
 **Storage on Local File System:**  
-The data is stored in the local file system, which means that the data is neither replicated nor distributed to different nodes, like it would be if a distributed file system like HDFS were used. 
-Therefore the data storage constitutes a single point of failure as well as an I/O bottleneck.
-This decreases the performance and the scalability of the solution significantly, because Spark can't read the data properly in parallel.
+The data is stored in the local file system, which means that the data is neither replicated nor distributed to different
+nodes, like it would be if a distributed file system like HDFS were used. 
+Therefore, the data storage constitutes a single point of failure as well as an I/O bottleneck.
+This decreases the performance and the scalability of the solution significantly, because Spark can't read the data
+properly in parallel.
 Furthermore, the data is not fault-tolerant because there is no replication, which means that if the
 data is lost, it is lost forever.
-This solution is not recommended for production use and was only chosen because of time constraints and the additional complexity
-the integration of a distributed file system would introduce. It should be further investigated if a HDFS cluster is beneficial for this project
-or if another fault-tolerant distributed file system is a more suitable solution.
+This solution is not recommended for production use and was only chosen because of time constraints and the additional
+complexity the integration of a distributed file system would introduce. It should be further investigated if a HDFS
+cluster is beneficial for this project or if another fault-tolerant distributed file system is a more suitable solution.
 
 **Insufficient Hardware for Tests:**
 The researchers didn't have access to a cluster with sufficient hardware to test the scalability of the application.
