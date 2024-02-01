@@ -114,12 +114,12 @@ analyze the impact of the corona pandemic on a country.
 
 This use case was implemented utilizing both cases (aggregated & non-aggregated data).
 Regarding the implementation of the first case, the data was just preprocessed and cached in Spark without any
-aggregation. By using this method arbitrary analysis of the dataset can be conducted on demand on a fine grained level.
-To illustrate this point, the possbility was implemented in the first case to select a country in the dashboard and see the top 5 events
+aggregation. By using this method, arbitrary analysis of the dataset can be conducted on demand at a fine-grained level.
+To illustrate this point, the possibility was implemented in the first case to select a country in the dashboard and see the top 5 events
 for that country which had the most negative impact.
 For the second case, the data was preprocessed and aggregated by the average goldstein scale per country
 per day. This level of aggregation was chosen to ensure that it's still possible to filter the data, which is utilized
-for the visualization, by date and country.
+for visualization, by date and country.
 
 Both ways enable the user to create the desired visualization. However, which approach is better depends on the use case
 and will be discussed in this project.
@@ -153,7 +153,7 @@ and will be discussed in this project.
 
 ### Prerequisites
 
-To run the project you need to have [Docker](https://www.docker.com/get-started/) (including docker compose) installed
+To run the project, you need to have [Docker](https://www.docker.com/get-started/) (including docker compose) installed
 and running on your machine.
 
 Additionally, make sure you are using WSL if you're running on Windows:
@@ -167,12 +167,12 @@ Additionally, make sure you are using WSL if you're running on Windows:
 
 The spark cluster has the following configuration by default:
 
-| Item      | Ressources        | Total Ressources (in cluster) |
-|-----------|-------------------|-------------------------------|
-| Workers   | 3                 | 3                             |
-| Executors | 2 per Worker      | 6                             |
-| RAM       | 2 GB per Executor | 12 GB                         |
-| Cores     | 1 per Executor    | 6                             |
+| Item      | Resources         | Total Resources (in cluster) |
+|-----------|-------------------|------------------------------|
+| Workers   | 3                 | 3                            |
+| Executors | 2 per Worker      | 6                            |
+| RAM       | 2 GB per Executor | 12 GB                        |
+| Cores     | 1 per Executor    | 6                            |
 
 This configuration was set as default, to ensure that the project can be run on most machines.
 
@@ -181,25 +181,25 @@ If you want to change the configuration, you can do so by navigating to `config`
 - `spark-defaults.conf`: Contains configuration regarding the executors (total number of executors, RAM & cores per
   executor).
 - `.env-spark`: Contains configuration regarding the workers (RAM & cores per worker) and must be set according to the
-  executor configuration. E.g. the amount of RAM per worker must equal the amount of RAM per executor multiplied by the
+  executor configuration. E.g., the amount of RAM per worker must equal the amount of RAM per executor multiplied by the
   number of executors per worker.
 
-The tests were executed with more memory assigned to the workers &excutors (see `tests.ipynb`).
+The tests were executed with more memory assigned to the workers & executors (see `tests.ipynb`).
 
 ### Setup
 
-First you have to clone this repository.
+First, you have to clone this repository.
 Then open your command line and navigate to the root directory of this repository.
-To setup the project, execute the following command:
+To set up the project, execute the following command:
 
 ```
 docker compose up
 ```
 
-This will automatically start and configure all necessary docker containers to run Apache Superset, Apache Spark and a
+This will automatically start and configure all necessary docker containers to run Apache Superset, Apache Spark, and a
 Jupyter Server.
 
-To shut down the all containers, execute the following command:
+To shut down all containers, execute the following command:
 
 ```
 docker compose down --volumes
@@ -218,23 +218,23 @@ The following web interfaces can be accessed after the setup has been completed 
 | Spark Worker 1     | http://localhost:8081/ | Web UI for a Spark worker node, showing details of tasks and resource usage.                                                      |
 | Spark Worker 2     | http://localhost:8082/ |                                                                                                                                   |
 | Spark Worker 3     | http://localhost:8083/ |                                                                                                                                   |
-| Spark Application  | http://localhost:4040/ | Spark application web UI, showing details of jobs, thrift server etc. (available when a spark session is initialized in juypter). |
-| Juypter Notebook   | http://localhost:8888/ | JupyterLab interface to interactively execute the python code of this project.                                                    |
+| Spark Application  | http://localhost:4040/ | Spark application web UI, showing details of jobs, thrift server etc. (available when a spark session is initialized in jupyter). |
+| Jupyter Notebook   | http://localhost:8888/ | JupyterLab interface to interactively execute the python code of this project.                                                    |
 
 ### Run Main Code
 
-To run the application code of the project you have to to the following steps:
+To run the application code of the project, you have to the following steps:
 
 1. Open the **Jupyter Notebook** web interface
 2. When prompted for a token type in `token`
 3. Navigate to `notebooks` > `main.ipynb`
 4. Run the code cells in the notebook
 5. Open the **Superset Dashboard** to view the results
-6. When prompted for a login use the following credentials:
+6. When prompted for a login, use the following credentials:
     - Username: `admin`
     - Password: `admin`
 
-**Don't start a seperate jupyter server to run the notebook.**
+**Don't start a separate jupyter server to run the notebook.**
 
 ### Run Test Code
 
@@ -245,10 +245,10 @@ To run the application code of the project you have to to the following steps:
     1. Navigate to `notebooks` > `data` > `parquet_test`
     2. Download the ZIP file from [bwSync&Share](https://bwsyncandshare.kit.edu/s/QTKj5jtPEH3KMkF)
     3. Extract the parquet files into the `parquet_test` directory
-4. If you previously ran the main code, you need to **restart the kernel**
-5. Run the code cells in the notebook
+5. If you previously ran the main code, you need to **restart the kernel**
+6. Run the code cells in the notebook
 
-**We recommend not to run the test code, as the execution can take up a full day and even longer.**
+**We recommend not running the test code, as the execution can take up a full day and even longer.**
 
 ### Create Test Result Plots
 
@@ -301,7 +301,7 @@ in CSV format.
 The CSV files are downloaded in a compressed form and then extracted.
 
 After extraction, the CSV files will be converted into the parquet format through parallel and distributed processing
-using Spark. The parquet format is a columnar storage format that is optimized for analytics workloads.
+using Spark. The parquet format is a columnar storage format optimized for analytics workloads.
 The parquet files will then be stored in the local file system.
 
 **Process Data(Non Aggregated)**
@@ -310,8 +310,8 @@ For the first case, the data is processed in a non-aggregated form.
 
 The data is loaded from the local file system into Spark. After that, the data is cleaned, so that
 only the usable data remains. Thereafter, an additional column will be joined to the data,
-which contains the country codes in the FIPS 10-4 standard. This is necessary because the country codes
-which are used in the GDELT dataset are in the ISO 3166-1 alpha-2 standard which is not supported by Superset.
+which contains the country codes in the FIPS 10–4 standard. This is necessary because the country codes
+which are used in the GDELT dataset are in the ISO 3166-1 alpha-2 standard which Superset does not support.
 
 Afterward, the data will be cleaned again and then cached and provisioned as a global temporary view in Spark.
 This enables the thrift server to access the data.
@@ -332,7 +332,7 @@ the data processed by Spark. The dashboard is connected to the Spark Thrift Serv
 This enables the dashboard to access the data in Spark so that it can also utilize the distributed processing
 capabilities of Spark.
 
-If a dashboard is opened, a request including a SQL-Statement is sent to the Thrift Server.
+If a dashboard is opened, a request including an SQL-Statement is sent to the Thrift Server.
 The Thrift Server then processes the SQL-Statement and looks for the data in the specified global temporary view.
 Retrieving data from the global temporary view will trigger a new Spark job.
 The Spark job will then retrieve the data from the cache and process it according to the SQL-Statement.
@@ -375,17 +375,17 @@ could not be tested properly so that some approximations and assumptions had to 
 The following components were taken from other sources, adapted, configured and integrated into this project:
 
 - [Superset](https://github.com/apache/superset): The docker setup of the official Apache Superset repository is the
-  foundation of the `docker-compose.yml` file and the startup scripts in the `docker` directoy used in this project.
+  foundation of the `docker-compose.yml` file and the startup scripts in the `docker` directory used in this project.
 - [Spark](https://github.com/bitnami/containers/tree/main/bitnami/spark): The docker image is used to run the Spark
   Master and Workers.
 - [Jupyter](https://github.com/jupyter/docker-stacks/tree/main/images/pyspark-notebook): The docker image includes a
-  Jupyter Server and an installation of Spark. It is used to run the the application code of the notebooks of this
-  project and to run the Thrift Server.
+  Jupyter Server and an installation of Spark.
+  It is used to run the application code from the notebooks of this project and to run the Thrift Server.
 
 ## Analysis
 
 ### Data
-The dataset which was used for the analysis of this project contains all events from the GDELT 2.0 Event Database starting at July 2015 and 
+The dataset, which was used for the analysis of this project contains all events from the GDELT 2.0-Event Database, starting in July 2015 and 
 
 ### Scalability
 
@@ -394,6 +394,7 @@ The dataset which was used for the analysis of this project contains all events 
 ## Evaluation
 
 ### Case 1: Pros & Cons
+
 
 ### Case 2: Pros & Cons
 
