@@ -169,12 +169,12 @@ Additionally, make sure you are using WSL if you're running on Windows:
 
 The spark cluster has the following configuration by default:
 
-| Item      | Resources        | Total Resources (in cluster) |
-|-----------|------------------|------------------------------|
-| Workers   | 3                | 3                            |
-| Executors | 2 per Worker     | 6                            |
+| Item      | Resources         | Total Resources (in cluster) |
+|-----------|-------------------|------------------------------|
+| Workers   | 3                 | 3                            |
+| Executors | 2 per Worker      | 6                            |
 | RAM       | 2 GB per Executor | 12 GB                        |
-| Cores     | 1 per Executor   | 6                            |
+| Cores     | 1 per Executor    | 6                            |
 
 This configuration was set as default, to ensure that the project can be run on most machines.
 
@@ -462,42 +462,98 @@ Unless specified otherwise in the individual test, the Spark Cluster was configu
 | Cores     | 1 per Executor    | 6                            |
 
 #### Data Volume
-The following tests were conducted to analyze how an increasing amount of data impacts the performance of the 
+
+The following tests were conducted to analyze how an increasing amount of data impacts the performance of the
 application. To achieve this, the application was executed repeatedly, while incrementing the number of months of data,
 which are loaded into the cluster and processed starting at July 2015 until the complete dataset was included
-(e.g. 1 month, 2 months, 3 months, ... of data). To minimize the total test duration, the measurements were done with 
+(e.g. 1 month, 2 months, 3 months, ... of data). To minimize the total test duration, the measurements were done with
 increasing data increments. Each measured value is depicted as a dot on the plotted lines in the following plots.
 It's also important to mention that the data volume of different months can vary. For that reason, the data volume of
 the months was calculated by adding the size of the included parquet files, to depict the impact of the data volume more
 accurately in the plots.
 
-The following plots illustrate the impact of an increasing data volume on the pre-processing response time of the 
-aggregated and non-aggregated version. The plot on the right side depicts an increase of data up to 1 year, while the 
+The following plots illustrate the impact of an increasing data volume on the pre-processing response time of the
+aggregated and non-aggregated version. The plot on the right side depicts an increase of data up to 1 year, while the
 plot on the left side depicts an increase of data up to the complete dataset:
 
 <img src="./misc/plots/data_volume_turnaround_year.png" width="45%" alt="">
 <img src="./misc/plots/data_volume_turnaround_all.png" width="45%" alt="">
 
 In both cases, it can be clearly seen that the pre-processing turnaround time increases linearly with the data volume.
-This is expected for multiple reasons. First, the data volume is the main factor that impacts the time it takes to 
-pre-process the data. Because the number of workers and executors as well as their assigned RAM and CPU cores are kept 
+This is expected for multiple reasons. First, the data volume is the main factor that impacts the time it takes to
+pre-process the data. Because the number of workers and executors as well as their assigned RAM and CPU cores are kept
 constant, processing the data takes longer, the more data has to be processed. Second, the data is loaded from the local
-file system, which is an I/O-bound operation. In the given architecture, reading the data from disk can't be properly 
+file system, which is an I/O-bound operation. In the given architecture, reading the data from disk can't be properly
 parallelized, because the data is not partitioned and distributed across multiple nodes/disks, which could be read in
-parallel. That means that the data has to be read sequentially and is limited by the throughput of a single disk, which 
+parallel. That means that the data has to be read sequentially and is limited by the throughput of a single disk, which
 increases the duration of read operations from the disk linearly with the data volume.
 
-Comparing the aggregated and non-aggregated version, it can be
+Comparing the aggregated and non-aggregated version in the plots, there is a noticeable difference in the factor by
+which the turnaround time increases with the data volume. On average the turnaround time of the non-aggregated version
+increases by 46.11 seconds per additional GB of data, while the turnaround time of the aggregated version only increases
+by 7.07 s/GB. This can be explained by the fact that the non-aggregated version has to load and process the complete
+dataset. The aggregated version on the other hand, only has to read a small subset of the 61 columns of the dataset,
+which is required for the aggregation. The additional effort, which is required to calculate the aggregation, is presumably
+offset by the reduced effort of the subsequent operations. E.g. the non-aggregated version has to join the complete
+dataset with the country code mapping table, which is an expensive operation when data is partitioned and distirbuted,
+while the aggregated version executes the join on the aggregated data. Therefore the impact of additional data is
+significantly lower in the aggregated version.
 
-The following plots illustrate the impact of an increasing data volume on the query response time of the 
+The following plots illustrate the impact of an increasing data volume on the query response time of the
 aggregated and non-aggregated version:
 
 <img src="./misc/plots/data_volume_response_year.png" width="45%" alt="">
 <img src="./misc/plots/data_volume_response_all.png" width="45%" alt="">
 
+By looking at the plots above one can clearly notice that increasing the data volume has a significant impact on the 
+query response time of the non-aggregated version, while there is no or even a slight positive impact on the query response 
+in the aggregated version. This can be explained by the fact, that the queries sent to the Thrift Server during the 
+tests were the same as the ones used in the respective Superset dashboards. The queries for the non-aggregated version therefore
+trigger an aggregation of the data on-demand, which is a very expensive operation and requires more effort the more
+data has to be processed. The query for the aggregated version on the other hand, only has to read the already 
+aggregated data from the cache. The absolute size of the aggregated data is negligible, even when more data is added,
+therefore the query response time almost independent of the data volume. The slight decrease in the query response time
+could be explained by the fact, that the data is not partitioned when the cached aggregation result is too small (e.g. 
+for 1 month of data the aggregated data is not partitioned). Once the data is partitioned, the data can be read in 
+parallel by mutliple executors, which might have a small positive impact on the query response time.
+
+Upon closer examination of the non-aggregated version, a significant increase of the factor by which the query response
+time grows relative to the data volume becomes evident between 7 and 8 months of data. This can be explained by the
+fact, that at 8 months worth of data the available memory space is not sufficient to cache the complete dataset in 
+memory for the first time (indicated by the dotted red line). Therefore the remaining data of this test run and the 
+additional data in the subsequent test runs are cached on disk. When an SQL query is processed, the data has to be 
+read from disk, which is an I/O-bound operation that increases the query response time significantly.
+
+By looking at the plots above one can clearly notice that increasing the data volume has a significant impact on the 
+query response time of the non-aggregated version, while there is no or even a slight positive impact on the query response 
+in the aggregated version. This can be explained by the fact, that the queries sent to the Thrift Server during the 
+tests were the same as the ones used in the respective Superset dashboards. The queries for the non-aggregated version therefore
+trigger an aggregation of the data on-demand, which is a very expensive operation and requires more effort the more
+data has to be processed. The query for the aggregated version on the other hand, only has to read the already 
+aggregated data from the cache. The absolute size of the aggregated data is negligible, even when more data is added,
+therefore the query response time almost independent of the data volume. The slight decrease in the query response time
+could be explained by the fact, that the data is not partitioned when the cached aggregation result is too small (e.g. 
+for 1 month of data the aggregated data is not partitioned). Once the data is partitioned, the data can be read in 
+parallel by mutliple executors, which might have a small positive impact on the query response time.
+
+Upon closer examination of the non-aggregated version, a significant increase of the factor by which the query response
+time grows relative to the data volume becomes evident between 7 and 8 months of data. This can be explained by the
+fact, that at 8 months worth of data the available memory space is not sufficient to cache the complete dataset in 
+memory for the first time (indicated by the dotted red line). Therefore the remaining data of this test run and the 
+additional data in the subsequent test runs are cached on disk. When an SQL query is processed, the data has to be 
+read from disk, which is an I/O-bound operation that increases the query response time significantly.
+
 #### Load
 
+
+<img src="./misc/plots/load_response_aggregated.png" width="45%">
+<img src="./misc/plots/load_response_non_aggregated.png" width="45%">
+
 #### Resources
+
+<img src="./misc/plots/resources_turnaround.png" width="45%">
+<img src="./misc/plots/resources_response.png" width="45%">
+
 
 ### Fault Tolerance
 
@@ -509,16 +565,18 @@ aggregated and non-aggregated version:
 ## Evaluation
 
 ### Case 1: Pros & Cons
+
 Whether the first case is better than the second case depends on the use case. The first case is better if the data
 analyst wants to analyze the data in a fine-grained way. This is because the data is not aggregated and can be analyzed
 on the fly in any way. Furthermore, it is no one required to aggregate the data for the data analyst. This means that
-the data analyst can create visualizations that are tailored to his needs without depending on a data engineer. 
+the data analyst can create visualizations that are tailored to his needs without depending on a data engineer.
 However, the drawback is that the data needs to be processed every time a visualization is created or loaded. This can
 take a relatively long time depending on the size of the data and can be quite resource-intensive.
 
 In terms of hardware, the first case is more expensive than the second case. This is because the data needs to be
 processed every time a visualization is created or loaded. This means that more data needs to be processed more often
-than in the second case and that significantly more memory is required. This is because the whole dataset is necessary and
+than in the second case and that significantly more memory is required. This is because the whole dataset is necessary
+and
 needs to be cached in memory to be processed quickly. So the first case is more expensive in terms of hardware but
 cheaper in terms of development costs.
 
@@ -530,10 +588,14 @@ cheaper in terms of development costs.
 |                          | Complex to work with |
 
 ### Case 2: Pros & Cons
-Whether the second case is better than the first case depends also on the use case. The second case is better if the data
+
+Whether the second case is better than the first case depends also on the use case. The second case is better if the
+data
 analyst wants to analyze the data in an aggregated way. This is because the data can be preprocessed and aggregated
-specifically beforehand and can be visualized immediately. Because the processing of the smaller dataset is less ressource
-expensive, the overall costs will go down and the performance will increase. Furthermore, the data analyst does not need to think about
+specifically beforehand and can be visualized immediately. Because the processing of the smaller dataset is less
+ressource
+expensive, the overall costs will go down and the performance will increase. Furthermore, the data analyst does not need
+to think about
 processing the whole dataset but can focus on only the necessary already aggregated data. The drawback is that the data
 needs to be processed again every time the data changes. Furthermore, the data analyst cannot decide how the data should
 be aggregated. This means that the data analyst has to request a new aggregation from a data engineer every time he
@@ -554,8 +616,9 @@ So the second case is cheaper in terms of hardware but more expensive in terms o
 | Resource efficient    |                             |
 
 ## Production Example & Recommendations
+
 In this example, it is to be assumed that there is a company that wants to analyze the GDELT dataset in a way so that
-they can analyze the impact of global events on their and other businesses. 
+they can analyze the impact of global events on their and other businesses.
 
 The company has a data science team that is responsible for analyzing the data and a data engineering team that is
 responsible for preparing the data in fitting aggregates for the data science team to analyze.
@@ -575,7 +638,8 @@ EBS volumes are block-level storage volumes that can be attached to EC2 instance
 redundant. This means that the data is fault-tolerant and can be recovered if a failure occurs. 
 This is an important improvement over the local filesystem which was used in the project. It is estimated that about
 150GB of data will be stored in the EBS volumes. This includes the raw data and the aggregated data. The businessdata
-will not be considered in this estimation. The data will be stored in the parquet format because it is a columnar storage
+will not be considered in this estimation. The data will be stored in the parquet format because it is a columnar
+storage
 format optimized for analytics workloads.
 
 The data engineering team will work with a m4.xlarge EC2 instance in which a Jupyter server is running. The Jupyter
@@ -593,8 +657,10 @@ is used to run the application code of the project. The instance is configured w
 In this setup, the data engineering team will be responsible for preparing the data in fitting aggregates for the data
 science team to analyze. The data engineering team will use the Jupyter server to run the application code of the
 project. The data engineering team will also be responsible for managing the EMR cluster.
-The cluster will use the EBS volumes as storage so that it can access the raw preprocessed data. Furthermore, the cluster
-saves the aggregated data in the EBS volumes. This enables the data science team to access the aggregated data in Superset.
+The cluster will use the EBS volumes as storage so that it can access the raw preprocessed data. Furthermore, the
+cluster
+saves the aggregated data in the EBS volumes. This enables the data science team to access the aggregated data in
+Superset.
 
 It is estimated that the aggregated data will be small enough that big data frameworks like Spark are not necessary to
 process the data. Rather, the data can be processed with traditional data processing frameworks like Pandas or SuperSet.
@@ -604,7 +670,8 @@ the development of this project, the researchers weren't able to discover a way 
 The cost of this setup is estimated to be about 786.18$ per month. This includes the costs for the EBS volumes, the
 EC2 instances, and the EMR cluster. The costs for the EBS volumes are estimated to be about 17.85$ per month. The costs
 for the EC2 instances are estimated to be about 175.20$ per month. The costs for the EMR cluster are estimated to be
-about 593.13$ per month. The costs for the EMR cluster are estimated to be so high because the cluster is configured with
+about 593.13$ per month. The costs for the EMR cluster are estimated to be so high because the cluster is configured
+with
 a lot of memory. This is because the cluster needs to be able to process the whole dataset at once. The costs for the
 EMR cluster could be reduced by using a smaller cluster and processing the data in batches. However, this would increase
 the time it takes to process the data. The costs for the Cluster were calculated with the rough estimation that
