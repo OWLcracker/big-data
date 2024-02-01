@@ -62,7 +62,8 @@ taken
 place in the world in the recent history. For example, the data can be used to analyze the events that where connected
 to the
 war in ukraine or the events that where connected to the corona pandemic.
-The dataset is available in CSV format and can be downloaded from the [GDELT website](https://www.gdeltproject.org/).
+The dataset is available in CSV format and can be downloaded from
+the [GDELT website](https://www.gdeltproject.org/data.html#documentation).
 
 The project is divided into two cases. In the first case, the data is processed in a non-aggregated form.
 In the second case, the data is processed in an aggregated form. The aggregation depends on the needs of the user.
@@ -115,7 +116,8 @@ analyze the impact of the corona pandemic on a country.
 This use case was implemented utilizing both cases (aggregated & non-aggregated data).
 Regarding the implementation of the first case, the data was just preprocessed and cached in Spark without any
 aggregation. By using this method, arbitrary analysis of the dataset can be conducted on demand at a fine-grained level.
-To illustrate this point, the possibility was implemented in the first case to select a country in the dashboard and see the top 5 events
+To illustrate this point, the possibility was implemented in the first case to select a country in the dashboard and see
+the top 5 events
 for that country which had the most negative impact.
 For the second case, the data was preprocessed and aggregated by the average goldstein scale per country
 per day. This level of aggregation was chosen to ensure that it's still possible to filter the data, which is utilized
@@ -167,12 +169,12 @@ Additionally, make sure you are using WSL if you're running on Windows:
 
 The spark cluster has the following configuration by default:
 
-| Item      | Resources         | Total Resources (in cluster) |
-|-----------|-------------------|------------------------------|
-| Workers   | 3                 | 3                            |
-| Executors | 2 per Worker      | 6                            |
+| Item      | Resources        | Total Resources (in cluster) |
+|-----------|------------------|------------------------------|
+| Workers   | 3                | 3                            |
+| Executors | 2 per Worker     | 6                            |
 | RAM       | 2 GB per Executor | 12 GB                        |
-| Cores     | 1 per Executor    | 6                            |
+| Cores     | 1 per Executor   | 6                            |
 
 This configuration was set as default, to ensure that the project can be run on most machines.
 
@@ -184,7 +186,7 @@ If you want to change the configuration, you can do so by navigating to `config`
   executor configuration. E.g., the amount of RAM per worker must equal the amount of RAM per executor multiplied by the
   number of executors per worker.
 
-The tests were executed with more memory assigned to the workers & executors (see `tests.ipynb`).
+The tests were executed with more memory assigned to the workers and excutors (see [Analysis](#analysis)).
 
 ### Setup
 
@@ -384,12 +386,125 @@ The following components were taken from other sources, adapted, configured and 
 
 ## Analysis
 
+The following sections describe the results of the project analysis, which was largely conducted in the `tests.ipynb`
+notebook.
+
 ### Data
-The dataset, which was used for the analysis of this project contains all events from the GDELT 2.0-Event Database, starting in July 2015 and 
+
+The dataset which was used for the analysis of this project contains all events from the GDELT 2.0 Event Database from
+July 2015 until December 2023 totalling in 102 months or 8.5 years worth of event data. As the events in the dataset
+date back to the 19th of February in 2015, almost the complete dataset was included in the analysis. Events that were
+recorded before February 2015 can be obtained from the GDELT 1.0 Event Database, which dates back to 1979. Because of
+the GDELT 2.0 dataset's size and the limited resources available for the analysis, the GDELT 1.0 dataset was not
+included in this project. In the following sections, mentions of a "complete" or "total" dataset refere to the 8.5 years
+worth of event data utilized in the analysis.
+
+The GDELT 2.0 dataset is provided in CSV files and is generated and uploaded every 15 minutes. For use in the project,
+these files were downloaded and then converted to the Parquet format. This conversion reduces the required storage space
+and facilitates faster data processing. The following table shows the total size of the dataset in CSV and Parquet
+format:
+
+| Total Size of CSV Files | Total Size of Parquet Files |
+|-------------------------|-----------------------------|
+| 185.91 GB               | 32.9 GB                     |
+
+The previous table shows that storing the data in the Parquet format is storage space efficient and reduces the required
+storage space by 82.3% for the given dataset.
+
+After the data is loaded into Spark and pre-processed, the result is cached to enable faster access for subsequent
+queries on the data by Superset. The cached data is stored primarily in memory. Once no more memory space is available,
+the rest of the data is stored on disk. The following table shows the amount of data that is cached in memory and on
+disk in the aggregated and non-aggregated case, when the complete dataset is used:
+
+| Case           | Cached Data in Memory | Cached Data on Disk | Total Cached Data |
+|----------------|-----------------------|---------------------|-------------------|
+| Aggregated     | 0.0 MB                | 12.41 MB            | 12.41 MB          |
+| Non-Aggregated | 65.39 GB              | 9.48 GB             | 74.87 GB          |
+
+This clearly illustrates the main difference between the aggregated and non-aggregated case. In the non-aggregated case,
+the space required to cache the non-aggregated data completely in memory to enable fast data processing exceeds the
+memory requirements of the aggregated case in orders of magnitude. In the given example use case, the non-aggregated
+case requires
+6.033 times more memory than the aggregated case. This has a significant impact on the hardware, which would be required
+for a cluster in a production scenario, resulting in significantly higher costs.
+
+Furthermore the table shows, that the total data size of the cached data is 2.28 times as large as the total size of the
+Parquet files, which indicates that the data, once loaded into Spark and partitioned across nodes, can't be
+compressed as efficiently as it's done using Parquet files. This must also be considered when dimensioning the hardware
+for the aggregated case, when the complete dataset must be cached in memory.
 
 ### Scalability
 
+To analyze the scalability of the application, a number of tests were conducted. In these tests the effects of different
+parameters on the performance of the application were analyzed, by scaling individiual parameters while keeping the rest
+of the environment constant. The effect on the performance on the aggregated and non-aggregated version of the 
+application was measured by running both versions seperately and measuring the following performance metrics:
+
+- **Query Response Time**: The amount of time it takes for the application to process and successfully respond to an SQL
+  query. This metric was chosen, because Superset sends SQL queries to the Thrift Server to retrieve data for
+  visualizations.
+  Therefore the response time has a significant impact on the user experience, when using accessing the dashboard.
+- **Pre-processing Turnaround Time**: The amount of time it takes for the application to load the necessary data from
+  the local file system into the Spark Cluster, pre-process it and cache it. This metric was chosen, because it
+  represents a complete cycle of the application, from loading the data to making it available for SQL queries. This has
+  an impact on how quickly data can be made available for visualizations.
+
+In the following sections the results of the tests are presented and analyzed, in which the parameters **Data Volume**,
+**Load** and **Resources** were scaled.
+
+Unless specified otherwise in the indiviudal test, the Spark Cluster was configured as follows for the test execution:
+
+| Item      | Ressources        | Total Ressources (in cluster) |
+|-----------|-------------------|-------------------------------|
+| Workers   | 3                 | 3                             |
+| Executors | 2 per Worker      | 6                             |
+| RAM       | 3 GB per Executor | 18 GB                         |
+| Cores     | 1 per Executor    | 6                             |
+
+#### Data Volume
+The following tests were conducted to analyze how an increasing amount of data impacts the performance of the 
+application. To achieve this, the application was executed repeatedly, while incrementing the number of months of data,
+which are loaded into the cluster and processed starting at July 2015 until the complete dataset was included
+(e.g. 1 month, 2 months, 3 months, ... of data). To minimize the total test duration, the measurements were done with 
+increasing data increments. Each measured value is depicted as a dot on the plotted lines in the following plots.
+It's also important to mention that the data volume of different months can vary. For that reason, the data volume of
+the months was calculated by adding the size of the included parquet files, to depict impact of the data volume more
+accurately in the plots.
+
+The following plots illustrate the impact of an increasing data volume on the pre-processing response time of the 
+aggregated and non-aggregated version. The plot on the right side depicts an increase of data up to 1 year, while the 
+plot on the left side depicts an increase of data up to the complete dataset:
+
+<img src="./misc/plots/data_volume_turnaround_year.png" width="45%">
+<img src="./misc/plots/data_volume_turnaround_all.png" width="45%">
+
+In both cases, it can be clearly seen that the pre-processing turnaround time increases linearly with the data volume.
+This is expected for multiple reasons. First, the data volume is the main factor that impacts the time it takes to 
+pre-process the data. Because the number of workers and executors as well as their assigned RAM and CPU cores are kept 
+constant, processing the data takes longer, the more data has to be processed. Second, the data is loaded from the local
+file system, which is an I/O-bound operation. In the given architecture, reading the data from disk can't be properly 
+parallelized, because the data is not partitioned and distributed across multiple nodes/disks, which could be read in
+parallel. That means that the data has to be read sequentially and is limited by the throughput of a single disk, which 
+increases the duration of read operations from the disk linearly with the data volume.
+
+Comparing the aggregated and non-aggregated version, it can be
+
+The following plots illustrate the impact of an increasing data volume on the query response time of the 
+aggregated and non-aggregated version:
+
+<img src="./misc/plots/data_volume_response_year.png" width="45%">
+<img src="./misc/plots/data_volume_response_all.png" width="45%">
+
+#### Load
+
+#### Resources
+
 ### Fault Tolerance
+
+<img src="./misc/screenshots/spark/stopped_workers_0.png" width="100%">
+<img src="./misc/screenshots/spark/stopped_workers_1.png" width="100%">
+<img src="./misc/screenshots/spark/stopped_workers_2.png" width="100%">
+<img src="./misc/plots/fault_tolerance_response.png" width="50%">
 
 ## Evaluation
 
