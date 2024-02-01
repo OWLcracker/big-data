@@ -394,9 +394,36 @@ The dataset, which was used for the analysis of this project contains all events
 ## Evaluation
 
 ### Case 1: Pros & Cons
+Whether the first case is better than the second case depends on the use case. The first case is better if the data
+analyst wants to analyze the data in a fine-grained way. This is because the data is not aggregated and can be analyzed
+on the fly in any way. Furthermore, it is no one required to aggregate the data for the data analyst. This means that
+the data analyst can create visualizations that are tailored to his needs without depending on a data engineer. 
+However, the drawback is that the data needs to be processed every time a visualization is created or loaded. This can
+take a relatively long time depending on the size of the data and can be quite resource-intensive.
 
+| Pros                     | Cons                 |
+|--------------------------|----------------------|
+| Independent              | Expensive            |
+| Fine-grained data access | Long execution times |
+|                          | Resource intensive   |
+|                          | Complex to work with |
 
 ### Case 2: Pros & Cons
+Whether the second case is better than the first case depends also on the use case. The second case is better if the data
+analyst wants to analyze the data in an aggregated way. This is because the data can be preprocessed and aggregated
+specifically beforehand and can be visualized immediately. Because the processing of the smaller dataset is less ressource
+expensive, the overall costs will go down and the performance will increase. Furthermore, the data analyst does not need to think about
+processing the whole dataset but can focus on only the necessary already aggregated data. The drawback is that the data
+needs to be processed again every time the data changes. Furthermore, the data analyst cannot decide how the data should
+be aggregated. This means that the data analyst has to request a new aggregation from a data engineer every time he
+wants to create a new visualization.
+
+| Pros                  | Cons                        |
+|-----------------------|-----------------------------|
+| Short execution times | Dependant on data engineer  |
+| Easy to work with     | Reprocessing on data change |
+| Cost efficient        |                             |
+| Resource efficient    |                             |
 
 ## Production Example & Recommendations
 
