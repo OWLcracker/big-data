@@ -89,7 +89,7 @@ the data in Spark. The drawback is that the data needs to be processed again eve
 the data analyst cannot decide how the data should be aggregated. This means that the data analyst has to request a new
 aggregation from the data engineer every time he wants to create a new visualization.
 
-### Example Use Case
+### Implemented Use Case
 This project was developed with the example use case to analyze the goldstein scale of the GDELT dataset for each country.
 The goldstein scale is a scale that measures the impact of an event. The scale ranges from -10 to +10. The higher the
 value, the more positive the impact of the event. The lower the value, the more negative the impact of the event.
@@ -137,13 +137,6 @@ Additionally, make sure you are using WSL if you're running on Windows:
 - Tick the box next to `Use the WSL 2 based engine`
 - Restart the docker engine
 
-<!---
-Additionally you need to allow docker to access the files in this repository:
-
-- Open docker desktop
-- Navigate to `Settings` > `Ressources` > `File sharing`
-- Add the file path to the repository 
---->
 
 ### Configuration
 
@@ -166,7 +159,7 @@ If you want to change the configuration, you can do so by navigating to `config`
   executor configuration. E.g. the amount of RAM per worker must equal the amount of RAM per executor multiplied by the
   number of executors per worker.
 
-However the tests were executed with more memory assigned to the workers (see `tests.ipynb`).
+The tests were executed with more memory assigned to the workers &excutors (see `tests.ipynb`).
 
 ### Setup
 
@@ -316,9 +309,8 @@ The Spark job will then retrieve the data from the cache and process it accordin
 The processed data will then be returned to the Thrift Server and then to the dashboard.
 The dashboard then can utilize the returned data to visualize it according to the user's needs.
 
-## Analysis
 
-### Limitations
+### Limitations & Shortcuts
 
 **Thrift Server:**  
 The Thrift Server is a component of Spark that enables JDBC/ODBC clients to execute SQL queries against Apache Spark.
@@ -344,6 +336,23 @@ cluster is beneficial for this project or if another fault-tolerant distributed 
 The researchers didn't have access to a cluster with sufficient hardware to test the scalability of the application.
 The hardware used was a single machine with 32GB of RAM and 12 cores. This means that the scalability of the application
 could not be tested properly so that some approximations and assumptions had to be made.
+
+## Analysis
+
+### Scalability
+
+### Fault Tolerance
+
+## Evaluation
+
+### Case 1: Pros & Cons
+
+### Case 2: Pros & Cons
+
+## Production Example & Recommendations
+
+## Conclusion
+
 
 ## References
 
