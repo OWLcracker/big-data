@@ -116,6 +116,7 @@ and will be discussed in this project.
     - [Web Interfaces](#web-interfaces)
     - [Run Main Code](#run-main-code)
     - [Run Test Code](#run-test-code)
+    - [Create Test Result Plots](#create-test-result-plots)
 3. [Documentation](#documentation)
     - [Spark](#spark)
     - [Superset](#superset)
@@ -165,7 +166,7 @@ If you want to change the configuration, you can do so by navigating to `config`
   executor configuration. E.g. the amount of RAM per worker must equal the amount of RAM per executor multiplied by the
   number of executors per worker.
 
-However the tests were executed with more memory assigned to the workers (see `tests.py`).
+However the tests were executed with more memory assigned to the workers (see `tests.ipynb`).
 
 ### Setup
 
@@ -230,6 +231,13 @@ To run the application code of the project you have to to the following steps:
 5. Run the code cells in the notebook
 
 **We recommend not to run the test code, as the execution can take up a full day and even longer.**
+
+### Create Test Result Plots
+
+1. Open the **Jupyter Notebook** web interface
+2. When prompted for a token type in `token`
+3. Navigate to `notebooks` > `test_evaluation.ipynb`
+4. Run the code cells in the notebook
 
 ## Documentation
 
