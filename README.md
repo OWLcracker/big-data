@@ -43,18 +43,24 @@
     - [ ] Reale Architektur (inkl. beteiligter Personen, Komponenten, Hardware) -> Parquet File(s) in HDFS Cluster
 - [ ] Analyse
     - [ ] Limitierungen
-      - [ ] Thrift Server
-      - [ ] No HDFS
+        - [ ] Thrift Server
+        - [ ] No HDFS
 
 ------------------------------------------------------------------------------------------------------------------------
 
 ## Overview
+
 This is the Big-Date Project of the course "Big Data" from Tom Schuck and Kilian Kempf at the Hochschule Karlsruhe(HKA).
-The goal of this project is to process the [GDELT 2.0 Event Database](http://data.gdeltproject.org/gdeltv2/masterfilelist.txt)
-with Apache Spark and visualize the results with Apache Superset. The GDELT 2.0-Event Database is a dataset that contains
-over one billion records of events from around the world. The events are collected from news articles and are updated daily
-in 15-minute intervals. With the help of this dataset, it is possible to analyze and visualize the events that have taken
-place in the world in the recent history. For example, the data can be used to analyze the events that where connected to the
+The goal of this project is to process
+the [GDELT 2.0 Event Database](http://data.gdeltproject.org/gdeltv2/masterfilelist.txt)
+with Apache Spark and visualize the results with Apache Superset. The GDELT 2.0-Event Database is a dataset that
+contains
+over one billion records of events from around the world. The events are collected from news articles and are updated
+daily
+in 15-minute intervals. With the help of this dataset, it is possible to analyze and visualize the events that have
+taken
+place in the world in the recent history. For example, the data can be used to analyze the events that where connected
+to the
 war in ukraine or the events that where connected to the corona pandemic.
 The dataset is available in CSV format and can be downloaded from the [GDELT website](https://www.gdeltproject.org/).
 
@@ -62,6 +68,7 @@ The project is divided into two cases. In the first case, the data is processed 
 In the second case, the data is processed in an aggregated form. The aggregation depends on the needs of the user.
 
 The project is implemented in Python and uses the following technologies:
+
 - [Apache Spark](https://spark.apache.org/)
 - [Apache Superset](https://superset.apache.org/)
 - [Jupyter Notebook](https://jupyter.org/)
@@ -72,6 +79,7 @@ The project is implemented in Python and uses the following technologies:
 In the following, both cases are explained in more detail.
 
 ### Case 1: Non-Aggregated Data
+
 The approach of the first case is to process the data in a non-aggregated form. The idea is to process the data in a way
 that the data analyst can decide how the data should be aggregated for the visualization through the use of
 SQL-Statements in Superset. The advantage of this approach is that the data analyst can decide how the data should be
@@ -82,26 +90,36 @@ This is achieved by caching and processing the data in Spark. The drawback is th
 every time a visualization is created or loaded. This can take a relatively long time depending on the size of the data.
 
 ### Case 2: Aggregated Data
+
 The approach of the second case is to process the data in an aggregated form. The idea is to process the data in a way
-that the necessary aggregations for the visualization are already done and kept in memory. The advantage of this approach
+that the necessary aggregations for the visualization are already done and kept in memory. The advantage of this
+approach
 is that the data is already aggregated and can be visualized immediately. This is achieved by caching and processing
 the data in Spark. The drawback is that the data needs to be processed again every time the data changes. Furthermore,
 the data analyst cannot decide how the data should be aggregated. This means that the data analyst has to request a new
 aggregation from the data engineer every time he wants to create a new visualization.
 
 ### Implemented Use Case
-This project was developed with the example use case to analyze the goldstein scale of the GDELT dataset for each country.
+
+This project was developed with the example use case to analyze the goldstein scale of the GDELT dataset for each
+country.
 The goldstein scale is a scale that measures the impact of an event. The scale ranges from -10 to +10. The higher the
 value, the more positive the impact of the event. The lower the value, the more negative the impact of the event.
 
-The goal was to visualize a world heat map that shows the goldstein scale for each country. The visualization should
-also be interactive. This means that the user should be able to filter the data by date and country. Furthermore, the
-user should be able to select a country and see the top 5 events for that country. With this, a user can, for example,
+The goal was to visualize a world heat map that visualizes the average goldstein scale for each country. The
+visualization should
+also be interactive. This means that the user should be able to filter the data by date and country. With this, a user
+can, for example,
 analyze the impact of the corona pandemic on a country.
 
-This use case was implemented in both cases.
+This use case was implemented utilizing both cases (aggregated & non-aggregated data).
 Regarding the implementation of the first case, the data was just preprocessed and cached in Spark without any
-aggregation. For the second case, the data was preprocessed and aggregated by the goldstein scale per country per day.
+aggregation. By using this method arbitrary analysis of the dataset can be conducted on demand on a fine grained level.
+To illustrate this point, the possbility was implemented in the first case to select a country in the dashboard and see the top 5 events
+for that country which had the most negative impact.
+For the second case, the data was preprocessed and aggregated by the average goldstein scale per country
+per day. This level of aggregation was chosen to ensure that it's still possible to filter the data, which is utilized
+for the visualization, by date and country.
 
 Both ways enable the user to create the desired visualization. However, which approach is better depends on the use case
 and will be discussed in this project.
@@ -118,10 +136,18 @@ and will be discussed in this project.
     - [Run Test Code](#run-test-code)
     - [Create Test Result Plots](#create-test-result-plots)
 3. [Documentation](#documentation)
-    - [Spark](#spark)
-    - [Superset](#superset)
-    - [Jupyter](#jupyter)
-4. [References](#references)
+    - [Architecture](#architecture)
+    - [Workflow](#workflow)
+    - [Limitations & Shortcuts](#limitations--shortcuts)
+    - [References](#references)
+4. [Analysis](#analysis)
+    - [Scalability](#scalability)
+    - [Fault Tolerance](#fault-tolerance)
+5. [Evaluation](#evaluation)
+    - [Case 1: Pros & Cons](#case-1-pros--cons)
+    - [Case 2: Pros & Cons](#case-2-pros--cons)
+6. [Production Example & Recommendations](#production-example--recommendations)
+7. [Conclusion](#conclusion)
 
 ## Getting Started
 
@@ -136,7 +162,6 @@ Additionally, make sure you are using WSL if you're running on Windows:
 - Navigate to `Settings` > `General`
 - Tick the box next to `Use the WSL 2 based engine`
 - Restart the docker engine
-
 
 ### Configuration
 
@@ -235,6 +260,7 @@ To run the application code of the project you have to to the following steps:
 ## Documentation
 
 ### Architecture
+
 This section describes the architecture of the application.
 ![Architecture](misc/diagramms/Architectur/Architectur.png)
 
@@ -260,16 +286,18 @@ it according to the SQL-Statement. The processed data will then be returned to t
 visualizations and narrative text. It is used to run the application code of the project. The application code is
 written in a Jupyter Notebook. The Jupyter Server is also used to run the test code of the project.
 Furthermore, the Jupyter Notebook is used to document the project and run the Spark Driver and Thrift Server.
-Both the Thrift Server and the Spark Driver are started in the Jupyter Notebook because they are required to 
+Both the Thrift Server and the Spark Driver are started in the Jupyter Notebook because they are required to
 run in the same Spark Context.
 
 ### Workflow
+
 This section describes the general workflow of the application.
 
 **Download Data**
 ![Download Data](./misc/diagramms/Fluss/DownloadFluss.png)
 At first, it is necessary to download the necessary data from the GDELT server.
-The basis is the [GDELT 2.0 Event Database](http://data.gdeltproject.org/gdeltv2/masterfilelist.txt) which is available in CSV format.
+The basis is the [GDELT 2.0 Event Database](http://data.gdeltproject.org/gdeltv2/masterfilelist.txt) which is available
+in CSV format.
 The CSV files are downloaded in a compressed form and then extracted.
 
 After extraction, the CSV files will be converted into the parquet format through parallel and distributed processing
@@ -278,11 +306,11 @@ The parquet files will then be stored in the local file system.
 
 **Process Data(Non Aggregated)**
 ![Process Data(Non Aggregated)](./misc/diagramms/Fluss/NonAggFluss.png)
-For the first case, the data is processed in a non-aggregated form. 
+For the first case, the data is processed in a non-aggregated form.
 
 The data is loaded from the local file system into Spark. After that, the data is cleaned, so that
 only the usable data remains. Thereafter, an additional column will be joined to the data,
-which contains the country codes in the FIPS 10-4 standard. This is necessary because the country codes 
+which contains the country codes in the FIPS 10-4 standard. This is necessary because the country codes
 which are used in the GDELT dataset are in the ISO 3166-1 alpha-2 standard which is not supported by Superset.
 
 Afterward, the data will be cleaned again and then cached and provisioned as a global temporary view in Spark.
@@ -294,13 +322,15 @@ For the second case, the data is processed in an aggregated form.
 
 The steps are the same as in the first case, except that the data is aggregated before it is cached.
 The aggregation depends on the needs of the user. A data scientist can then decide how the data should be aggregated.
-Subsequently, only the aggregated data is cached and provisioned as a global temporary view in Spark like in the first case.
+Subsequently, only the aggregated data is cached and provisioned as a global temporary view in Spark like in the first
+case.
 
 **Request from SuperSet**
 ![Request from SuperSet](./misc/diagramms/Fluss/SuperSetFluss.png)
 Another component of the application is the Apache Superset dashboard. This dashboard is used to visualize
-the data processed by Spark. The dashboard is connected to the Spark Thrift Server. 
-This enables the dashboard to access the data in Spark so that it can also utilize the distributed processing capabilities of Spark.
+the data processed by Spark. The dashboard is connected to the Spark Thrift Server.
+This enables the dashboard to access the data in Spark so that it can also utilize the distributed processing
+capabilities of Spark.
 
 If a dashboard is opened, a request including a SQL-Statement is sent to the Thrift Server.
 The Thrift Server then processes the SQL-Statement and looks for the data in the specified global temporary view.
@@ -309,20 +339,20 @@ The Spark job will then retrieve the data from the cache and process it accordin
 The processed data will then be returned to the Thrift Server and then to the dashboard.
 The dashboard then can utilize the returned data to visualize it according to the user's needs.
 
-
 ### Limitations & Shortcuts
 
 **Thrift Server:**  
 The Thrift Server is a component of Spark that enables JDBC/ODBC clients to execute SQL queries against Apache Spark.
 During the development of this project, the researchers weren't able to discover a way to scale the Thrift Server
 horizontally. Especially because it was a requirement that the Thrift Sever can access cached Temporary Views.
-This means that the Thrift Server currently is a bottleneck and single point of failure in the application. 
+This means that the Thrift Server currently is a bottleneck and single point of failure in the application.
 This is because the Thrift Server is a single instance that is not distributed. Future research would be necessary
 to either find a way to scale the Thrift Server horizontally or to find an alternative to the Thrift Server.
 
 **Storage on Local File System:**  
-The data is stored in the local file system, which means that the data is neither replicated nor distributed to different
-nodes, like it would be if a distributed file system like HDFS were used. 
+The data is stored in the local file system, which means that the data is neither replicated nor distributed to
+different
+nodes, like it would be if a distributed file system like HDFS were used.
 Therefore, the data storage constitutes a single point of failure as well as an I/O bottleneck.
 This decreases the performance and the scalability of the solution significantly, because Spark can't read the data
 properly in parallel.
@@ -332,12 +362,30 @@ This solution is not recommended for production use and was only chosen because 
 complexity the integration of a distributed file system would introduce. It should be further investigated if a HDFS
 cluster is beneficial for this project or if another fault-tolerant distributed file system is a more suitable solution.
 
+**Superset Database**
+TODO
+
 **Insufficient Hardware for Tests:**
 The researchers didn't have access to a cluster with sufficient hardware to test the scalability of the application.
 The hardware used was a single machine with 32GB of RAM and 12 cores. This means that the scalability of the application
 could not be tested properly so that some approximations and assumptions had to be made.
 
+### References
+
+The following components were taken from other sources, adapted, configured and integrated into this project:
+
+- [Superset](https://github.com/apache/superset): The docker setup of the official Apache Superset repository is the
+  foundation of the `docker-compose.yml` file and the startup scripts in the `docker` directoy used in this project.
+- [Spark](https://github.com/bitnami/containers/tree/main/bitnami/spark): The docker image is used to run the Spark
+  Master and Workers.
+- [Jupyter](https://github.com/jupyter/docker-stacks/tree/main/images/pyspark-notebook): The docker image includes a
+  Jupyter Server and an installation of Spark. It is used to run the the application code of the notebooks of this
+  project and to run the Thrift Server.
+
 ## Analysis
+
+### Data
+The dataset which was used for the analysis of this project contains all events from the GDELT 2.0 Event Database starting at July 2015 and 
 
 ### Scalability
 
@@ -352,20 +400,6 @@ could not be tested properly so that some approximations and assumptions had to 
 ## Production Example & Recommendations
 
 ## Conclusion
-
-
-## References
-
-The following components were taken from other sources, adapted, configured and integrated into this project:
-
-- [Superset](https://github.com/apache/superset)
-  - Docker compose file (foundation of `docker-compose.yml`)
-  - Startup scripts (`docker`)
-- [Spark](https://github.com/bitnami/containers/tree/main/bitnami/spark)
-  - Docker image for Spark Master & Workers
-- [Jupyter](https://github.com/jupyter/docker-stacks/tree/main/images/pyspark-notebook)
-  - Docker image for Jupyter Notebook
-  - Includes an installation of Spark
 
 <!---
 ## Notes
