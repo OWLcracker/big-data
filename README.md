@@ -572,7 +572,8 @@ project:
 The company decides to use AWS as their cloud provider.  
 The data is stored in Elastic Block Store (EBS) volumes.
 EBS volumes are block-level storage volumes that can be attached to EC2 instances. EBS volumes are highly available and
-redundant. This means that the data is fault-tolerant and can be recovered if a failure occurs. It is estimated that about
+redundant. This means that the data is fault-tolerant and can be recovered if a failure occurs. 
+This is an important improvement over the local filesystem which was used in the project. It is estimated that about
 150GB of data will be stored in the EBS volumes. This includes the raw data and the aggregated data. The businessdata
 will not be considered in this estimation. The data will be stored in the parquet format because it is a columnar storage
 format optimized for analytics workloads.
@@ -597,6 +598,8 @@ saves the aggregated data in the EBS volumes. This enables the data science team
 
 It is estimated that the aggregated data will be small enough that big data frameworks like Spark are not necessary to
 process the data. Rather, the data can be processed with traditional data processing frameworks like Pandas or SuperSet.
+Because of this, the Thrift Server is not necessary and will not be used. Another reason for this is also that during
+the development of this project, the researchers weren't able to discover a way to scale the Thrift Server horizontally.
 
 The cost of this setup is estimated to be about 786.18$ per month. This includes the costs for the EBS volumes, the
 EC2 instances, and the EMR cluster. The costs for the EBS volumes are estimated to be about 17.85$ per month. The costs
