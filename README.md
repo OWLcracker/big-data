@@ -391,7 +391,9 @@ complexity the integration of a distributed file system would introduce. It shou
 cluster is beneficial for this project or if another fault-tolerant distributed file system is a more suitable solution.
 
 **Superset Database**
-TODO
+Normally in a development environment, the Superset database would be persisted in a docker volume. However, in this case,
+the database is mounted from the host system. This simplifies the setup and the usage of the project, but it is normally
+not recommended because of synchronization issues and the potential loss of data.
 
 **Insufficient Hardware for Tests:**
 The researchers didn't have access to a cluster with sufficient hardware to test the scalability of the application.
