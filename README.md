@@ -399,6 +399,13 @@ The researchers didn't have access to a cluster with sufficient hardware to test
 The hardware used was a single machine with 32GB of RAM and 12 cores. This means that the scalability of the application
 could not be tested properly so that some approximations and assumptions had to be made.
 
+**Disk mount into Spark nodes**
+The data is mounted via a docker volume into the Spark nodes. This is not recommended for production use, because it
+can lead to synchronization issues and the potential loss of data. Furthermore, the local file system is a bottleneck
+for the performance of the application. A distributed file system like HDFS should be used instead but was not
+implemented because of time constraints and the additional complexity the integration of a distributed file system would
+introduce.
+
 ### References
 
 The following components were taken from other sources, adapted, configured and integrated into this project:
