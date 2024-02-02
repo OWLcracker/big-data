@@ -812,34 +812,42 @@ day.
 
 The comparison of the non-aggregated and the aggregated implementation of the application clearly shows, that the 
 additional flexibility of the non-aggregated version is outweighed by the significantly higher resource requirements
-and therefore costs. Usinng the non-aggregated approach a data analyst could 
+and the corresponding costs. Using the non-aggregated approach a data analyst could analyze the data in a mroe flexible
+manner, because he would be able to execute any analytical query on-demand without the need to prepare a designated
+aggregation beforehand. However, to retrieve the result in a reasonable time, the complete dataset would have to be
+cached in memory, so Spark can process the data quickly. This would require an enormous amount of memory, leading to
+exploding hardware costs. Furthermore, this approach is more sensitive to an increasing load, because the every request
+would trigger a Spark job executing a potentially expensive aggregation using the complete dataset. An increasing
+amount of users would quickly lead to an overload of the Spark cluster and a significant increase of the query response
+time.
 
+The aggregated approach, on the other hand, is more resource- and cost-efficient, because the data only needs to be
+prepared once and be efficiently queried by subsequent requests. Even when additional processing of the pre-aggregated
+data is needed to fulfill a request, the amount of data that would need to be processed would be significantly smaller 
+and therefore less resource-intensive. This would lead to a more stable and predictable query response time, even when 
+the load increases. In addition to that, the query response time is almost independent of the data volume. Only the 
+one-time effort to prepare the data increases. The amount of RAM that is required to cache pre-aggregated data entirely
+in memory is significantly smaller compared to the non-aggregated case, resulting in notably lower hardware costs. The 
+drawback of the aggregated approach is the time and effort it takes to prepare the data. The analysis would be limited
+to the data which is already prepared and therefore less flexible. 
 
+However, both approaches suffer from the identified weaknesses of the architecture. As no way could be identified 
+to scale the Thrift Server horizontally, it constitutes a bottleneck and a single point of failure and is therefore
+not suitable to be used in a production environment. Furthermore, the data is read from the local file system, which is 
+detrimental to the scalability and fault tolerance of the application. Further research would be necessary to determine
+whether the application could be properly scaled, when a distributed file system (e.g. HDFS) were used to store the data.
+Additionally, the usage of the Thrift Server needs further investigation to determine if there is a way to scale it 
+or whether there is a substitute, which provides the required functionality. 
 
-The project shows that the implemented architecture would 
-
-trift server, storage, 
-
-
-
-The project shows that the aggregated case is more cost-efficient and resource-efficient than the non-aggregated case.
-This is because the data is already aggregated and does not need to be processed extensively every time a visualization
-is created or loaded. The memory usage spikes only when aggregates are created and the data is cached. After that, the
-memory usage is way less than in the non-aggregated case because the aggregated data is way smaller than the raw data.
-This is under the assumption that the aggregation is not time-critical and can be done in advance.
-
-
-
-
-<!---
-## Notes
-
-Connection URI from Superset to the Thrift Server
-
-```
-hive://spark@jupyter:10000/default
-
-find [directory] -type d -empty -exec touch {}/.gitkeep \;
-
-```
---->**
+Considering the identified drawbacks of the prototyped architecture, a more suitable solution was proposed in the 
+[production example](#production-example--recommendations), which differs from the implemented prototype.
+The proposed architecture leverages cloud services to run the application in a scalable and fault-tolerant way, while 
+keeping the costs at a reasonable level. This is due 
+to the fact that the RAM- and CPU-intensive Spark cluster is only used for processing and preparing required aggregates
+and can be shut down once the data is prepared. For querying the data a single instance of Hive should be sufficient, 
+because processing pre-aggregated data is relatively cheap and doesn't require the data to be stored in memory 
+and the use of distributed computing.
+The data could be stored in EBS volumes, which are fault-tolerant and don't present an I/O-bottleneck for the application.
+The proposed architecture provides an elastically scalable, fault-tolerant and cost-efficient solution, which 
+retains the visualization capabilities of Superset and the distirbuted data processing capabilities of Spark for the
+resource-intensive pre-processing.
