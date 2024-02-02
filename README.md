@@ -12,7 +12,7 @@
     - [X] Fault tolerance (kill worker)
 - [X] Tests ausführen
 - [ ] Jupyter Notebook Markdown Erklärungen
-- [ ] Diagramme von Testergebnissen
+- [X] Diagramme von Testergebnissen
 - [x] Daten bereitstellen & Einfügen ermöglichen
 - [ ] GitHub Readme
     - [x] Overview (NC)
@@ -79,7 +79,7 @@ The project is implemented in Python and uses the following technologies:
 
 In the following, both cases are explained in more detail.
 
-### Case 1: Non-Aggregated Data
+### Non-Aggregated Case
 
 The approach of the first case is to process the data in a non-aggregated form. The idea is to process the data in a way
 that the data analyst can decide how the data should be aggregated for the visualization through the use of
@@ -90,7 +90,7 @@ This enables the data analyst to create visualizations that are tailored to his 
 This is achieved by caching and processing the data in Spark. The drawback is that the data needs to be processed
 every time a visualization is created or loaded. This can take a relatively long time depending on the size of the data.
 
-### Case 2: Aggregated Data
+### Aggregated Case
 
 The approach of the second case is to process the data in an aggregated form. The idea is to process the data in a way
 that the necessary aggregations for the visualization are already done and kept in memory. The advantage of this
@@ -114,12 +114,13 @@ can, for example,
 analyze the impact of the corona pandemic on a country.
 
 This use case was implemented utilizing both cases (aggregated & non-aggregated data).
-Regarding the implementation of the first case, the data was just preprocessed and cached in Spark without any
+Regarding the implementation of the non-aggregated case, the data was just preprocessed and cached in Spark without any
 aggregation. By using this method, arbitrary analysis of the dataset can be conducted on demand at a fine-grained level.
-To illustrate this point, the possibility was implemented in the first case to select a country in the dashboard and see
+To illustrate this point, the possibility was implemented in the non-aggregated case to select a country in the
+dashboard and see
 the top 5 events
 for that country which had the most negative impact.
-For the second case, the data was preprocessed and aggregated by the average goldstein scale per country
+For the aggregated case, the data was preprocessed and aggregated by the average goldstein scale per country
 per day. This level of aggregation was chosen to ensure that it's still possible to filter the data, which is utilized
 for visualization, by date and country.
 
@@ -143,11 +144,12 @@ and will be discussed in this project.
     - [Limitations & Shortcuts](#limitations--shortcuts)
     - [References](#references)
 4. [Analysis](#analysis)
-    - [Scalability](#scalability)
-    - [Fault Tolerance](#fault-tolerance)
+   - [Data](#data)
+   - [Scalability](#scalability)
+   - [Fault Tolerance](#fault-tolerance)
 5. [Evaluation](#evaluation)
-    - [Case 1: Pros & Cons](#case-1-pros--cons)
-    - [Case 2: Pros & Cons](#case-2-pros--cons)
+    - [Non-Aggregated Case: Pros & Cons](#non-aggregated-case-pros--cons)
+    - [Aggregated Case: Pros & Cons](#aggregated-case-pros--cons)
 6. [Production Example & Recommendations](#production-example--recommendations)
 7. [Conclusion](#conclusion)
 
@@ -322,10 +324,10 @@ This enables the thrift server to access the data.
 ![Process Data(Aggregated)](./misc/diagramms/Fluss/AggFluss.png)
 For the second case, the data is processed in an aggregated form.
 
-The steps are the same as in the first case, except that the data is aggregated before it is cached.
+The steps are the same as in the non-aggregated case, except that the data is aggregated before it is cached.
 The aggregation depends on the needs of the user. A data scientist can then decide how the data should be aggregated.
-Subsequently, only the aggregated data is cached and provisioned as a global temporary view in Spark like in the first
-case.
+Subsequently, only the aggregated data is cached and provisioned as a global temporary view in Spark like in the
+non-aggregated case.
 
 **Request from SuperSet**
 ![Request from SuperSet](./misc/diagramms/Fluss/SuperSetFluss.png)
@@ -477,8 +479,8 @@ The following plots illustrate the impact of an increasing data volume on the pr
 aggregated and non-aggregated version. The first plot depicts an increase of data up to 1 year, whereas the
 following plot depicts an increase of data up to the complete dataset:
 
-<img src="./misc/plots/data_volume_turnaround_year.png" width="80%" alt="">
-<img src="./misc/plots/data_volume_turnaround_all.png" width="80%" alt="">
+<img src="./misc/plots/data_volume_turnaround_year.png" width="100%" alt="">
+<img src="./misc/plots/data_volume_turnaround_all.png" width="100%" alt="">
 
 In both cases, it can be clearly seen that the pre-processing turnaround time increases linearly with the data volume.
 This is expected for multiple reasons. First, the data volume is the main factor that impacts the time it takes to
@@ -504,8 +506,8 @@ significantly lower in the aggregated version.
 The following plots illustrate the impact of an increasing data volume on the query response time of the
 aggregated and non-aggregated version:
 
-<img src="./misc/plots/data_volume_response_year.png" width="80%" alt="">
-<img src="./misc/plots/data_volume_response_all.png" width="80%" alt="">
+<img src="./misc/plots/data_volume_response_year.png" width="100%" alt="">
+<img src="./misc/plots/data_volume_response_all.png" width="100%" alt="">
 
 By looking at the plots above one can clearly notice that increasing the data volume has a significant impact on the
 query response time of the non-aggregated version, while there is no or even a slight positive impact on the query
@@ -546,9 +548,9 @@ and non-aggregated version. The first plot depicts an increasing load up to 100 
 response time of both versions, whereas the following plots depict an increasing load up to 1000 parallel queries and
 their individual impact on the aggregated and non-aggregated version:
 
-<img src="./misc/plots/load_response_both.png" width="80%">
-<img src="./misc/plots/load_response_aggregated.png" width="80%">
-<img src="./misc/plots/load_response_non_aggregated.png" width="80%">
+<img src="./misc/plots/load_response_both.png" width="100%">
+<img src="./misc/plots/load_response_aggregated.png" width="100%">
+<img src="./misc/plots/load_response_non_aggregated.png" width="100%">
 
 In the first plot it can be seen that the query response time of both versions increase in linear fashion with the
 increasing load up to 100 parallel queries. The factor by which the query response time increases with the load is much
@@ -576,7 +578,7 @@ architecture.
 The following tests were conducted to analyze how an increasing amount of resources impacts the performance of the
 application. In the context of big data, scaling is typically achieved by adding additional nodes comprised
 of commodity hardware to a cluster. To analyze this, the application was executed multiple times, each time manually
-increasing the number of workers in the Spark Cluster. However the configuration of a single worker, including the 
+increasing the number of workers in the Spark Cluster. However the configuration of a single worker, including the
 number of executors per worker as well as the allocated RAM and CPU cores per executor, remained unchanged.
 
 The tests were executed with the following resource configurations:
@@ -596,7 +598,7 @@ nodes, to see the impact of adding additional resources.
 The following plot illustrate the impact of an increasing amount of resources on the pre-processing turnaround time of
 the aggregated and non-aggregated version:
 
-<img src="./misc/plots/resources_turnaround.png" width="80%">
+<img src="./misc/plots/resources_turnaround.png" width="100%">
 
 The plot shows that the pre-processing turnaround time of the non-aggregated version clearly decreases with an
 increasing number of workers. This is expected, because the data is partitioned and distributed across multiple nodes,
@@ -615,7 +617,7 @@ overhead of shuffling the data could exceed the benefits of utilizing additional
 The following plot illustrate the impact of an increasing amount of resources on the query response time of the
 aggregated and non-aggregated version:
 
-<img src="./misc/plots/resources_response.png" width="80%">
+<img src="./misc/plots/resources_response.png" width="100%">
 
 The given plot shows that the query response time of the non-aggregated version decreases with an increasing number of
 workers. This is expected, because the aggregation of the data is done on-demand, which can be parallelized across
@@ -640,17 +642,18 @@ additional hardware would enable the exploration of a wider range of cluster con
 that could be fully cached in memory.
 
 ### Fault Tolerance
+
 The following tests were conducted to analyze the fault tolerance of the application. This is important, because the
-application should be able to handle the failure of individual nodes and the contained data without having to process 
-the complete dataset from scratch again. To measure the impact of failing nodes, the application was executed multiple 
+application should be able to handle the failure of individual nodes and the contained data without having to process
+the complete dataset from scratch again. To measure the impact of failing nodes, the application was executed multiple
 times, each time manually stopping a different number of workers in the Spark Cluster after the data has
 been pre-processed and cached. This leads to the loss of cached data partitions, which have to be reproduced once a
-query is sent to the Thrift Server, which requires all partitions to be available. Like in the resource scalability 
-tests, 1 month of data was used for the non-aggregated version and 6 months of data for the aggregated version, to 
-ensure that the cached data fits into memory and that the cached data is big enough to be partitioned and distributed 
+query is sent to the Thrift Server, which requires all partitions to be available. Like in the resource scalability
+tests, 1 month of data was used for the non-aggregated version and 6 months of data for the aggregated version, to
+ensure that the cached data fits into memory and that the cached data is big enough to be partitioned and distributed
 across all nodes, to see the impact of stopping workers.
 
-The following screenshots illustrate the impact on the cached data of the aggregated version, when stopping 0, 1 and 2 
+The following screenshots illustrate the impact on the cached data of the aggregated version, when stopping 0, 1 and 2
 out of 3 workers in the Spark Cluster:
 
 All workers running with 100% of the data cached in 6 partitions:
@@ -662,45 +665,51 @@ Two workers stopped with 33.33% of the data cached in 2 partitions:
 
 The following plot illustrates the impact of failing workers on the query response time of the aggregated version:
 
-<img src="./misc/plots/fault_tolerance_response.png" width="80%" alt="">
+<img src="./misc/plots/fault_tolerance_response.png" width="100%" alt="">
 
 As the plot shows, that queries sent to the Thrift Server are still processed and responded to, even when workers are
 stopped. However, the query response time increases by orders of magnitude. This is expected,
-because the partitions, which are lost due to the failed workers, have to be re-loaded from the local file system and 
+because the partitions, which are lost due to the failed workers, have to be re-loaded from the local file system and
 processed again.
 
 This emphasizes two important characteristics of Spark:
-- **Lineage Graph**: Spark keeps track of the operations that are performed on the data, which enables it to re-create lost
+
+- **Lineage Graph**: Spark keeps track of the operations that are performed on the data, which enables it to re-create
+  lost
   partitions by re-executing the operations that were performed on the individual partitions.
 - **Lazy Evaluation**: Spark only processes the data when it is required, which enables it to re-create lost partitions
   only when they are needed.
 
 This means that the application is fault-tolerant, because it can re-create lost partitions and is therefore able to
-successfully respond to queries, even when workers containing needed partitions are stopped. The downside of the 
+successfully respond to queries, even when workers containing needed partitions are stopped. The downside of the
 re-creation of data is Spark's lazy evaluation mechanism, since the data is not re-created right away, but only when
 a query is sent to the Thrift Server, which can result in a significant increase of the query response time for the user
 which sent the query.
 
-The Thrift Server on the other hand, as it was already mentioned, acts as a single point of failure in the application, 
-because it can't be replicated to ensure that queries can be processed and responded to, even when an instance of the 
+The Thrift Server on the other hand, as it was already mentioned, acts as a single point of failure in the application,
+because it can't be replicated to ensure that queries can be processed and responded to, even when an instance of the
 Thrift Server fails.
 
 ## Evaluation
 
-### Case 1: Pros & Cons
+### Non-Aggregated Case: Pros & Cons
 
-Whether the first case is better than the second case depends on the use case. The first case is better if the data
+Whether the non-aggregated is better than the aggregated case depends on the use case. The non-aggregated case is better
+if the data
 analyst wants to analyze the data in a fine-grained way. This is because the data is not aggregated and can be analyzed
 on the fly in any way. Furthermore, it is no one required to aggregate the data for the data analyst. This means that
 the data analyst can create visualizations that are tailored to his needs without depending on a data engineer.
 However, the drawback is that the data needs to be processed every time a visualization is created or loaded. This can
 take a relatively long time depending on the size of the data and can be quite resource-intensive.
 
-In terms of hardware, the first case is more expensive than the second case. This is because the data needs to be
+In terms of hardware, the non-aggregated case is more expensive than the aggregated case. This is because the data needs
+to be
 processed every time a visualization is created or loaded. This means that more data needs to be processed more often
-than in the second case and that significantly more memory is required. This is because the whole dataset is necessary
+than in the aggregated case and that significantly more memory is required. This is because the whole dataset is
+necessary
 and
-needs to be cached in memory to be processed quickly. So the first case is more expensive in terms of hardware but
+needs to be cached in memory to be processed quickly. So the non-aggregated case is more expensive in terms of hardware
+but
 cheaper in terms of development costs.
 
 | Pros                     | Cons                 |
@@ -710,9 +719,10 @@ cheaper in terms of development costs.
 |                          | Resource intensive   |
 |                          | Complex to work with |
 
-### Case 2: Pros & Cons
+### Aggregated Case: Pros & Cons
 
-Whether the second case is better than the first case depends also on the use case. The second case is better if the
+Whether the aggregated is better than the non-aggregated case depends also on the use case. The aggregated case is
+better if the
 data
 analyst wants to analyze the data in an aggregated way. This is because the data can be preprocessed and aggregated
 specifically beforehand and can be visualized immediately. Because the processing of the smaller dataset is less
@@ -724,12 +734,14 @@ needs to be processed again every time the data changes. Furthermore, the data a
 be aggregated. This means that the data analyst has to request a new aggregation from a data engineer every time he
 wants to create a new visualization.
 
-In terms of hardware, the second case is cheaper than the first case. This is because the data is already aggregated and
+In terms of hardware, the aggregated case is cheaper than the non-aggregated. This is because the data is already
+aggregated and
 does not need to be processed extensively every time a visualization is created or loaded. The memory usage spikes
-only when aggregates are created and the data is cached. After that, the memory usage is way less than in the first case
+only when aggregates are created and the data is cached. After that, the memory usage is way less than in the
+non-aggregated case
 because the aggregated data is way smaller than the raw data. This is under the assumption that the aggregation is not
 time-critical and can be done in advance.
-So the second case is cheaper in terms of hardware but more expensive in terms of development costs.
+So the aggregated case is cheaper in terms of hardware but more expensive in terms of development costs.
 
 | Pros                  | Cons                        |
 |-----------------------|-----------------------------|
@@ -746,8 +758,9 @@ they can analyze the impact of global events on their and other businesses.
 The company has a data science team that is responsible for analyzing the data and a data engineering team that is
 responsible for preparing the data in fitting aggregates for the data science team to analyze.
 
-Through the results of this project, the company decides to use the second case approach to analyze the data.
-This is because the second case is more cost-efficient and resource-efficient than the first case. Furthermore, they
+Through the results of this project, the company decides to use the aggregated approach to analyze the data.
+This is because the aggregated approach is more cost-efficient and resource-efficient than the non-aggregated case.
+Furthermore, they
 came to the conclusion that aggregated data is sufficient for their use case and that they don't need to analyze the
 data in a fine-grained way.
 
