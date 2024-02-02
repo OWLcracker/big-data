@@ -50,23 +50,21 @@
 
 ## Overview
 
-This is the Big-Date Project of the course "Big Data" from Tom Schuck and Kilian Kempf at the Hochschule Karlsruhe(HKA).
-The goal of this project is to process
-the [GDELT 2.0 Event Database](http://data.gdeltproject.org/gdeltv2/masterfilelist.txt)
-with Apache Spark and visualize the results with Apache Superset. The GDELT 2.0-Event Database is a dataset that
-contains
+This submission represents the big data project for the course "Big Data and Advanced Database System Concepts",
+created by Tom Schuck and Kilian Kempf at the Hochschule Karlsruhe (HKA).
+Our project's objective is to leverage Apache Spark for processing the 
+[GDELT 2.0 Event Database](https://www.gdeltproject.org/data.html#documentation) and utilize Apache Superset for data
+visualization. The GDELT 2.0 Event Database is a dataset which contains
 over one billion records of events from around the world. The events are collected from news articles and are updated
-daily
-in 15-minute intervals. With the help of this dataset, it is possible to analyze and visualize the events that have
-taken
-place in the world in the recent history. For example, the data can be used to analyze the events that where connected
-to the
-war in ukraine or the events that where connected to the corona pandemic.
+daily in 15-minute intervals. This rich dataset allows for the analysis and visualization of recent historical events 
+worldwide, such as the conflict in Ukraine and the COVID-19 pandemic.
 The dataset is available in CSV format and can be downloaded from
-the [GDELT website](https://www.gdeltproject.org/data.html#documentation).
+the [GDELT website](http://data.gdeltproject.org/gdeltv2/masterfilelist.txt).
 
-The project is divided into two cases. In the first case, the data is processed in a non-aggregated form.
-In the second case, the data is processed in an aggregated form. The aggregation depends on the needs of the user.
+This project encompasses two cases, both aimed at achieving the same objective through different strategies.
+The first case processes and presents the data in a non-aggregated format, allowing for on-demand aggregations.
+Conversely, the second case involves processing and delivering the data in a pre-aggregated format. 
+Both cases are implemented and evaluated to determine the advantages and drawbacks of each approach.
 
 The project is implemented in Python and uses the following technologies:
 
