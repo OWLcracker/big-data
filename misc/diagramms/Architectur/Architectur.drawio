@@ -1,6 +1,6 @@
-<mxfile host="Electron" modified="2024-02-01T16:55:16.272Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/23.0.2 Chrome/120.0.6099.109 Electron/28.1.0 Safari/537.36" etag="F4B0GnnDtINH_1iyWArE" version="23.0.2" type="device">
+<mxfile host="Electron" modified="2024-02-02T19:02:07.315Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/23.0.2 Chrome/120.0.6099.109 Electron/28.1.0 Safari/537.36" etag="XoLGbzZZ14VDMYR0UH4m" version="23.0.2" type="device">
   <diagram name="Seite-1" id="tL0DDLGdbVWQin7-5K3Q">
-    <mxGraphModel dx="1047" dy="681" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="2336" math="0" shadow="0">
+    <mxGraphModel dx="1013" dy="659" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="2336" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -111,7 +111,7 @@
         <mxCell id="MwAB8pa6X5zpWCNBC2v1-39" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="MwAB8pa6X5zpWCNBC2v1-5" target="MwAB8pa6X5zpWCNBC2v1-34" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="MwAB8pa6X5zpWCNBC2v1-5" value="Superset&lt;br&gt;(m4.xlarge)" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=JetBrainsMono Nerd Font;" parent="1" vertex="1">
+        <mxCell id="MwAB8pa6X5zpWCNBC2v1-5" value="Superset/&lt;br&gt;Hive&lt;br&gt;(m4.xlarge)" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=JetBrainsMono Nerd Font;" parent="1" vertex="1">
           <mxGeometry x="330" y="1050" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="MwAB8pa6X5zpWCNBC2v1-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=JetBrainsMono Nerd Font;" parent="1" source="MwAB8pa6X5zpWCNBC2v1-8" target="MwAB8pa6X5zpWCNBC2v1-13" edge="1">
