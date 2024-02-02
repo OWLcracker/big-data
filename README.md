@@ -37,7 +37,7 @@ The approach of the first case is to process the data in a non-aggregated form. 
 that the data analyst can decide how the data should be aggregated for the visualization through the use of
 SQL statements in Superset. The advantage of this approach is that the data analyst can decide how the data should be
 aggregated. Furthermore, no data is lost to aggregation and can be displayed on demand in superset utilizing the
-preprocessed data which is kept in memory in Spark.
+pre-processed data which is kept in memory in Spark.
 This enables the data analyst to create visualizations that are tailored to his needs on the fly.
 This is achieved by caching and processing the data in Spark. The drawback of this approach is that the processing of 
 SQL requests must be executed on non-aggregated data every time a visualization is created or loaded. Depending on the
@@ -338,7 +338,7 @@ The dashboard then can utilize the returned data to visualize it according to th
 
 ### Limitations & Shortcuts
 
-**Thrift Server:**  
+**Thrift Server**  
 The Thrift Server is a component of Spark that enables JDBC/ODBC clients to execute SQL queries against Apache Spark.
 During the development of this project, no possiblity could be discovered to scale the Thrift Server
 horizontally. Especially because it was a requirement that the Thrift Sever can access cached data registered as 
@@ -347,7 +347,7 @@ This is due to the fact that there is only a single instance of the Thrift Serve
 as the Spark Driver. Future research would be necessary to either find a way to scale the Thrift Server horizontally 
 or to find an alternative solution to the Thrift Server.
 
-**Storage on Local File System:**  
+**Storage on Local File System**  
 The data used in this project is stored in the local file system, which means that the data is neither replicated
 nor distributed to different nodes, like it would be if a distributed file system like HDFS was used.
 Therefore, the data storage constitutes a single point of failure as well as an I/O bottleneck.
@@ -360,19 +360,24 @@ Therefore the solution is neither scalable nor fault-tolerant and was only chose
 and the usage of the project. It should be further investigated if a HDFS cluster would be beneficial for this
 project or if another fault-tolerant distributed file system presents a more suitable solution.
 
-**Superset Database**
-Normally in a development environment, Supersets PostgreSQL database, which stores the configuration of the dashboards,
+**Superset Database**  
+Normally in a development environment, Superset's PostgreSQL database, which stores the configuration of the dashboards,
 chart elements, etc., would be persisted using a docker volume. However, in this project
-the database is mounted from the host system. This solution was chosen to simplify the setup and the usage of the 
-project, because the created Superset dashboards can be exchanged between different setups using GitHub
+the database is persisted on the local file systen mounted into the database container. 
+This solution was chosen to simplify the development and the usage of the project, because the created Superset dashboards 
+can be easily exchanged between different setups using version control software like GitHub. Nevertheless, this solution
+is not recommended because of synchronization issues and the potential loss of data.
 
-This simplifies the setup and the usage of the project, but it is normally
-not recommended because of synchronization issues and the potential loss of data.
-
-**Insufficient Hardware for Tests:**
-The researchers didn't have access to a cluster with sufficient hardware to test the scalability of the application.
-The hardware used was a single machine with 32GB of RAM and 12 cores. This means that the scalability of the application
-could not be tested properly so that some approximations and assumptions had to be made.
+**Insufficient Hardware for Tests**  
+Limited by the available hardware, the scalability of the application could not be evaluated as thoroughly as desired.
+In particular, the substantial resource demands of the non-aggregated approach restricted the volume of data that 
+could be utilized in some test. This precaution was necessary to avoid memory problems and skewed test outcomes
+due to data being cached on disk. Additionally, the application was tested on a single machine rather than on a 
+multi-node cluster, which would be typically used in a production environment. By dividing the application components 
+into separate docker containers, an attempt was made to mimic a cluster setting. Nonetheless, the application still
+ran on shared resources throughout the testing phase. An increased overall workload on the machine could have affected the
+the performance of individual components. On the other hand, the application did not face network latency or any other issues
+specific to cluster environments. Therefore, the validity of the test results is limited. 
 
 
 ### References
@@ -382,7 +387,7 @@ The following components were taken from other sources, adapted, configured and 
 - [Superset](https://github.com/apache/superset): The docker setup of the official Apache Superset repository is the
   foundation of the `docker-compose.yml` file and the startup scripts in the `docker` directory used in this project.
 - [Spark](https://github.com/bitnami/containers/tree/main/bitnami/spark): The docker image is used to run the Spark
-  Master and Workers.
+  Master and the Workers.
 - [Jupyter](https://github.com/jupyter/docker-stacks/tree/main/images/pyspark-notebook): The docker image includes a
   Jupyter Server and an installation of Spark.
   It is used to run the application code from the notebooks of this project and to run the Thrift Server.
@@ -694,36 +699,36 @@ Thrift Server fails.
 
 ### Non-Aggregated Case
 
-Whether the non-aggregated is better than the aggregated case depends on the use case. The non-aggregated case is better
+Whether the non-aggregated case is more suitable than the aggregated case depends on the use case. The non-aggregated case is better
 if the data
 analyst wants to analyze the data in a fine-grained way. This is because the data is not aggregated and can be analyzed
-on the fly in any way. Furthermore, no data engineer is required to aggregate the data for the data analyst. This means that
+on the fly using arbitrary queries. Furthermore, no data engineer is required to aggregate the data for the data analyst. This means that
 the data analyst can create visualizations that are tailored to his needs without depending on a data engineer.
 However, the drawback is that the data needs to be processed every time a visualization is created or loaded. This can
 take a relatively long time depending on the size of the data and can be quite resource-intensive.
 
-In terms of hardware, the non-aggregated case is more expensive than the aggregated case. This is because the data needs
+In terms of hardware, the non-aggregated is more expensive than the aggregated approach. This is because the data needs
 to be
 processed every time a visualization is created or loaded. This means that more data needs to be processed more often
-than in the aggregated case and that significantly more memory is required. This is because the whole dataset is
-necessary and needs to be cached in memory to be processed quickly.
-So the non-aggregated case is more expensive in terms of hardware but cheaper in terms of development costs.
+than in the aggregated case and that significantly more memory is required. This is due to the fact that the whole 
+dataset must be cached in memory to be processed quickly, to respond to queries in a reasonable time.
+Therefore the non-aggregated case is more expensive in terms of hardware but cheaper in terms of development costs.
 
-| Pros                     | Cons                 |
-|--------------------------|----------------------|
-| Independent              | Expensive            |
-| Fine-grained data access | Long execution times |
-|                          | Resource intensive   |
-|                          | Complex to work with |
+| Pros                        | Cons                 |
+|-----------------------------|----------------------|
+| Flexible analytical queries | Expensive            |
+| Fine-grained data access    | Long execution times |
+|                             | Resource intensive   |
+|                             | Complex to work with |
 
 ### Aggregated Case
 
-Whether the aggregated is better than the non-aggregated case depends also on the use case. The aggregated case is
-better if the data
-analyst wants to analyze the data in an aggregated way. This is because the data can be preprocessed and aggregated
+Whether the aggregated approach is a more suitable solution than the non-aggregated approach depends also on the 
+use case. The aggregated approach is better if the data
+analyst wants to analyze the data in an aggregated way. This is because the data can be pre-processed and aggregated
 specifically beforehand and can be visualized immediately. Because the processing of the smaller dataset is less
-ressource
-expensive, the overall costs will go down and the performance will increase. Furthermore, the data analyst does not need
+resource
+intensive, the overall costs decrease while the performance increases. Furthermore, the data analyst does not need
 to think about
 processing the whole dataset but can focus on only the necessary already aggregated data. The drawback is that the data
 needs to be processed again every time the data changes. Furthermore, the data analyst cannot decide how the data should
@@ -732,12 +737,12 @@ wants to create a new visualization.
 
 In terms of hardware, the aggregated case is cheaper than the non-aggregated. This is because the data is already
 aggregated and
-does not need to be processed extensively every time a visualization is created or loaded. The memory usage spikes
-only when aggregates are created and the data is cached. After that, the memory usage is way less than in the
-non-aggregated case
-because the aggregated data is way smaller than the raw data. This is under the assumption that the aggregation is not
+does not need to be processed extensively every time a visualization is created or loaded. The memory usage only spikes 
+when aggregates are created and the data is cached. 
+Subsequently, memory usage significantly decreases in comparison to the non-aggregated case, as the aggregated data 
+occupies far less space than the raw data. This is under the assumption that the aggregation is not
 time-critical and can be done in advance.
-So the aggregated case is cheaper in terms of hardware but more expensive in terms of development costs.
+Therefore the aggregated case is cheaper in terms of hardware but more expensive in terms of development costs.
 
 | Pros                  | Cons                        |
 |-----------------------|-----------------------------|
@@ -748,14 +753,20 @@ So the aggregated case is cheaper in terms of hardware but more expensive in ter
 
 ## Production Example & Recommendations
 
+Based on the results of the analysis, the following example illustrates how the application could be used in a
+production environment, what improvements of the architecture could be made and what the costs of the setup would be.
+
 In this example, it is to be assumed that there is a company that wants to analyze the GDELT dataset in a way so that
-they can analyze the impact of global events on their and other businesses.
+they can analyze the impact of global events on their and other businesses. For example a dashboard could be created,
+which contains indicators and visualizations regarding specific types of events that are aggregated by country, which could
+then be compared to the company's sales data to see if there is a correlation between the events and the sales in 
+affected countries. 
 
 The company has a data science team that is responsible for analyzing the data and a data engineering team that is
-responsible for preparing the data in fitting aggregates for the data science team to analyze.
+responsible for preparing the data to fitting aggregates for the data science team to analyze.
 
-Through the results of this project, the company decides to use the aggregated approach to analyze the data.
-This is because the aggregated approach is more cost-efficient and resource-efficient than the non-aggregated case.
+Through the results of this project, the company decides to use the aggregated approach to analyze the data, due
+to the cost- and resource-efficiency of the approach compared to the non-aggregated approach.
 Furthermore, they
 came to the conclusion that aggregated data is sufficient for their use case and that they don't need to analyze the
 data in a fine-grained way.
@@ -764,65 +775,71 @@ The company decides to use the following architecture to analyze the data, which
 project:  
 ![Production Example](./misc/diagramms/Architectur/Architecture-AWS.png)
 
-The company decides to use AWS as their cloud provider.  
-The data is stored in Elastic Block Store (EBS) volumes.
-EBS volumes are block-level storage volumes that can be attached to EC2 instances. EBS volumes are highly available and
-redundant. This means that the data is fault-tolerant and can be recovered if a failure occurs.
-This is an important improvement over the local filesystem which was used in the project. It is estimated that about
-150GB of data will be stored in the EBS volumes. This includes the raw data and the aggregated data. The businessdata
-will not be considered in this estimation. The data will be stored in the parquet format in EBS because it is a columnar
-storage format optimized for analytics workloads which can be directly imported into SuperSet.
+The company decides to use AWS as a cloud provider, to avoid the need to manage the infrastructure and to be able to
+scale the infrastructure based on their needs.
 
-The data engineering team will work with a m4.xlarge EC2 instance in which a Jupyter server is running. The Jupyter
+In the proposed architecture, the data is stored in Elastic Block Store (EBS) volumes.
+EBS volumes are block-level storage volumes that can be attached to EC2 instances. EBS volumes are highly available and
+redundant, which means that the data is fault-tolerant and can be recovered if a failure occurs.
+This is an important improvement over the local file system, which was used in the project, as it also enables
+reading data in parallel fashion. It is estimated that about
+150GB of storage space is required to store the raw data in a compressed format as well as the aggregated data 
+in the EBS volumes. The business data, however, is not considered in this estimation. The data is stored in EBS using the
+parquet file format, because it is a columnar storage format optimized for analytics workloads.
+
+The data engineering team works with a m4.xlarge EC2 instance in which a Jupyter server is running. The Jupyter
 server is used to run the application code of the project. The instance is configured with 16GB of RAM and 4 vCPUs.
 
-Furthermore, will work with an AWS EMR cluster. EMR is a managed cluster platform that simplifies running big data
-frameworks, such as Apache Spark, Apache Hadoop, Apache Hive, and Apache Kafka, on AWS to process and analyze vast
-amounts of data. The EMR cluster will be configured with four r4.xlarge EC2 instances. Each instance will be configured
-with 30GB of RAM and 4 vCPUs. The master node will be a m4.large EC2 instance. The master node will be configured with
-8GB of RAM and 2 vCPUs.
+Furthermore, the data engineering team utilizes an AWS EMR cluster. EMR is a managed cluster platform that simplifies 
+running big data frameworks, such as Apache Spark, Apache Hadoop, Apache Hive, and Apache Kafka, on AWS to process 
+and analyze vast amounts of data. The EMR cluster is be configured with four r4.xlarge EC2 instances. Each instance is
+configured with 30GB of RAM and 4 vCPUs. The master node will be a m4.large EC2 instance. The master node is configured with
+8GB of RAM and 2 vCPUs, as it is only responsible for managing the cluster and does not process any data itself.
 
-In this setup, the data engineering team will be responsible for preparing the data in fitting aggregates for the data
-science team to analyze. The data engineering team will use the Jupyter server to run the application code of the
-project. The data engineering team will also be responsible for managing the EMR cluster.
-The cluster will use the EBS volumes as storage so that it can access the raw preprocessed data. Furthermore, the
-cluster saves the aggregated data in the EBS volumes.
+In this setup, the data engineering team plays a crucial role in preprocessing the data into appropriate 
+aggregates for analysis by the data science team. Utilizing a Jupyter server, the data engineering team executes the
+project's application code and oversees the management of the EMR cluster. The EMR cluster leverages EBS volumes for
+both accessing raw data and storing the processed, aggregated data.
 
-It is estimated that the aggregated data will be small enough that big data frameworks like Spark are not necessary to
-process the data. Rather, the data can be processed with traditional data processing frameworks like Pandas or SuperSet.
-Because of this, the Thrift Server is not necessary and will not be used. Another reason for this is also that during
-the development of this project, the researchers weren't able to discover a way to scale the Thrift Server horizontally.
-
-The data analysis team will work with a m4.xlarge EC2 instance in which an Apache SuperSet and an Apache Hive instance are 
-running.
-The Hive instance can load the data from the parquet files which are stored in the EBS volumes and provide a HiveQL interface
-which can be queried. SuperSet can then query the data from the Hive instance and visualize it.
+It is estimated that the pre-aggregated data is small enough that big data frameworks like Spark are not necessary to
+to process data in a distributed way, when analytical SQL queries are executed on this data. 
+Rather, the data can be processed utilizing traditional processing frameworks and SQL engines.
+Because of this, the Thrift Server is no longer necessary as the data doesn't need to be stored in Spark, removing the 
+non-scalable bottleneck from the architecture. Instead the data analysis team utilizes a m4.xlarge EC2 instance in 
+which an Apache Superset and an Apache Hive instance are running.
+The Hive instance can load the data from the parquet files which are stored in the EBS volumes and provides a HiveQL interface
+which can be queried. Superset is then able query the data by sending requests to the Hive instance and visualize the 
+results.
 
 The cost of this setup is estimated to be about 786.18$ per month. This includes the costs for the EBS volumes, the
 EC2 instances, and the EMR cluster. The costs for the EBS volumes are estimated to be about 17.85$ per month. The costs
 for the EC2 instances are estimated to be about 175.20$ per month. The costs for the EMR cluster are estimated to be
-about 593.13$ per month. The costs for the EMR cluster are estimated to be so high because the cluster is configured with
-a lot of memory. This is because the cluster needs to be able to process the whole dataset at once. The costs for the
-EMR cluster could be reduced by using a smaller cluster and processing the data in batches. However, this would increase
-the time it takes to process the data. The costs for the Cluster were calculated with the rough estimation that
-they will be running for about 10 hours per day. The costs for the SuperSet instance were calculated with 24 hours per
-day.
+about 593.13$ per month. The costs for the EMR cluster are estimated to be so high, because the cluster is configured with
+a lot of memory. This is due to the fact that the cluster was configured to be able to process the whole dataset at once,
+to ensure that even large amounts of data can be processed quickly. These costs could be reduced by using a smaller 
+cluster and by processing the data in batches. However, this would increase the turnaround time of the data processing.
+
+
+The costs for the EMR cluster were calculated with the rough estimation that they will be running for about 10 hours per
+day, since the cluster is only used to process the data and can be shut down once the data is prepared.
+The costs for the Superset instance were calculated assuming a runtime of 24 hours per day, to ensure that the 
+visualizations can be accessed at any time.
 
 ## Conclusion
 
 The comparison of the non-aggregated and the aggregated implementation of the application clearly shows, that the 
-additional flexibility of the non-aggregated version is outweighed by the significantly higher resource requirements
-and the corresponding costs. Using the non-aggregated approach a data analyst could analyze the data in a mroe flexible
-manner, because he would be able to execute any analytical query on-demand without the need to prepare a designated
+additional flexibility of the non-aggregated version is outweighed by its significantly higher resource requirements
+and the corresponding costs. Using the non-aggregated approach a data analyst could analyze the data in a more flexible
+manner, because he would be able to execute arbitrary analytical queries on-demand without the need to prepare a designated
 aggregation beforehand. However, to retrieve the result in a reasonable time, the complete dataset would have to be
 cached in memory, so Spark can process the data quickly. This would require an enormous amount of memory, leading to
-exploding hardware costs. Furthermore, this approach is more sensitive to an increasing load, because the every request
-would trigger a Spark job executing a potentially expensive aggregation using the complete dataset. An increasing
+exploding hardware costs. Furthermore, this approach is more sensitive to an increasing load, because every request 
+triggers a Spark job executing a potentially expensive aggregation on the complete dataset. An increasing
 amount of users would quickly lead to an overload of the Spark cluster and a significant increase of the query response
 time.
 
 The aggregated approach, on the other hand, is more resource- and cost-efficient, because the data only needs to be
-prepared once and be efficiently queried by subsequent requests. Even when additional processing of the pre-aggregated
+prepared once and can be efficiently queried by subsequent requests. Even when additional processing of the pre-aggregated
 data is needed to fulfill a request, the amount of data that would need to be processed would be significantly smaller 
 and therefore less resource-intensive. This would lead to a more stable and predictable query response time, even when 
 the load increases. In addition to that, the query response time is almost independent of the data volume. Only the 
@@ -835,7 +852,7 @@ However, both approaches suffer from the identified weaknesses of the architectu
 to scale the Thrift Server horizontally, it constitutes a bottleneck and a single point of failure and is therefore
 not suitable to be used in a production environment. Furthermore, the data is read from the local file system, which is 
 detrimental to the scalability and fault tolerance of the application. Further research would be necessary to determine
-whether the application could be properly scaled, when a distributed file system (e.g. HDFS) were used to store the data.
+whether the application could be properly scaled, when a distributed file system (e.g. HDFS) would be used to store the data.
 Additionally, the usage of the Thrift Server needs further investigation to determine if there is a way to scale it 
 or whether there is a substitute, which provides the required functionality. 
 
@@ -843,11 +860,13 @@ Considering the identified drawbacks of the prototyped architecture, a more suit
 [production example](#production-example--recommendations), which differs from the implemented prototype.
 The proposed architecture leverages cloud services to run the application in a scalable and fault-tolerant way, while 
 keeping the costs at a reasonable level. This is due 
-to the fact that the RAM- and CPU-intensive Spark cluster is only used for processing and preparing required aggregates
+to the fact that the RAM- and CPU-intensive cluster, which is used to run Spark, is only needed for processing and 
+preparing required aggregates
 and can be shut down once the data is prepared. For querying the data a single instance of Hive should be sufficient, 
 because processing pre-aggregated data is relatively cheap and doesn't require the data to be stored in memory 
-and the use of distributed computing.
+and to be processed by the use of distributed computing.
 The data could be stored in EBS volumes, which are fault-tolerant and don't present an I/O-bottleneck for the application.
-The proposed architecture provides an elastically scalable, fault-tolerant and cost-efficient solution, which 
-retains the visualization capabilities of Superset and the distirbuted data processing capabilities of Spark for the
+
+Therefore the proposed architecture provides an elastically scalable, fault-tolerant and cost-efficient solution, which 
+retains the visualization capabilities of Superset and the distributed data processing capabilities of Spark for the
 resource-intensive pre-processing.
