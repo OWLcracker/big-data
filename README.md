@@ -770,8 +770,8 @@ EBS volumes are block-level storage volumes that can be attached to EC2 instance
 redundant. This means that the data is fault-tolerant and can be recovered if a failure occurs.
 This is an important improvement over the local filesystem which was used in the project. It is estimated that about
 150GB of data will be stored in the EBS volumes. This includes the raw data and the aggregated data. The businessdata
-will not be considered in this estimation. The data will be stored in the parquet format because it is a columnar
-storage format optimized for analytics workloads.
+will not be considered in this estimation. The data will be stored in the parquet format in EBS because it is a columnar
+storage format optimized for analytics workloads which can be directly imported into SuperSet.
 
 The data engineering team will work with a m4.xlarge EC2 instance in which a Jupyter server is running. The Jupyter
 server is used to run the application code of the project. The instance is configured with 16GB of RAM and 4 vCPUs.
@@ -782,20 +782,21 @@ amounts of data. The EMR cluster will be configured with four r4.xlarge EC2 inst
 with 30GB of RAM and 4 vCPUs. The master node will be a m4.large EC2 instance. The master node will be configured with
 8GB of RAM and 2 vCPUs.
 
-The data science team will work with a m4.xlarge EC2 instance in which a Jupyter server is running. The Jupyter server
-is used to run the application code of the project. The instance is configured with 16GB of RAM and 4 vCPUs.
-
 In this setup, the data engineering team will be responsible for preparing the data in fitting aggregates for the data
 science team to analyze. The data engineering team will use the Jupyter server to run the application code of the
 project. The data engineering team will also be responsible for managing the EMR cluster.
 The cluster will use the EBS volumes as storage so that it can access the raw preprocessed data. Furthermore, the
-cluster saves the aggregated data in the EBS volumes. This enables the data science team to access the aggregated data in
-Superset.
+cluster saves the aggregated data in the EBS volumes.
 
 It is estimated that the aggregated data will be small enough that big data frameworks like Spark are not necessary to
 process the data. Rather, the data can be processed with traditional data processing frameworks like Pandas or SuperSet.
 Because of this, the Thrift Server is not necessary and will not be used. Another reason for this is also that during
 the development of this project, the researchers weren't able to discover a way to scale the Thrift Server horizontally.
+
+The data analysis team will work with a m4.xlarge EC2 instance in which an Apache SuperSet and an Apache Hive instance are 
+running.
+The Hive instance can load the data from the parquet files which are stored in the EBS volumes and provide a HiveQL interface
+which can be queried. SuperSet can then query the data from the Hive instance and visualize it.
 
 The cost of this setup is estimated to be about 786.18$ per month. This includes the costs for the EBS volumes, the
 EC2 instances, and the EMR cluster. The costs for the EBS volumes are estimated to be about 17.85$ per month. The costs
