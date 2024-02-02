@@ -54,7 +54,7 @@ This submission represents the big data project for the course "Big Data and Adv
 created by Tom Schuck and Kilian Kempf at the Hochschule Karlsruhe (HKA).
 Our project's objective is to leverage Apache Spark for processing the 
 [GDELT 2.0 Event Database](https://www.gdeltproject.org/data.html#documentation) and utilize Apache Superset for data
-visualization. The GDELT 2.0 Event Database is a dataset which contains
+visualization. The GDELT 2.0-Event Database is a dataset which contains
 over one billion records of events from around the world. The events are collected from news articles and are updated
 daily in 15-minute intervals. This rich dataset allows for the analysis and visualization of recent historical events 
 worldwide, such as the conflict in Ukraine and the COVID-19 pandemic.
@@ -94,9 +94,9 @@ The approach of the second case is to process the data in an aggregated form. Th
 that the necessary aggregations for the visualization are already done and kept in memory. The advantage of this
 approach
 is that the data is already aggregated and can be visualized immediately. This is achieved by caching and processing
-the data in Spark. The drawback is that the data needs to be processed again every time the data changes. Furthermore,
-the data analyst cannot decide how the data should be aggregated. This means that the data analyst has to request a new
-aggregation from the data engineer every time he wants to create a new visualization.
+the data in Spark. The drawback is that the aggregate needs to be processed again every time the underlying data changes.
+Furthermore, the data analyst cannot create a new aggregate on his own. This means that the data analyst has to
+request a new aggregation from the data engineer every time he wants to create a new visualization.
 
 ### Implemented Use Case
 
@@ -106,10 +106,8 @@ The goldstein scale is a scale that measures the impact of an event. The scale r
 value, the more positive the impact of the event. The lower the value, the more negative the impact of the event.
 
 The goal was to visualize a world heat map that visualizes the average goldstein scale for each country. The
-visualization should
-also be interactive. This means that the user should be able to filter the data by date and country. With this, a user
-can, for example,
-analyze the impact of the corona pandemic on a country.
+visualization should also be interactive. This means that the user should be able to filter the data, for example,
+by date and country. With this, a user can, for example, analyze the impact of the corona pandemic on a country.
 
 This use case was implemented utilizing both cases (aggregated & non-aggregated data).
 Regarding the implementation of the non-aggregated case, the data was just preprocessed and cached in Spark without any
@@ -265,25 +263,26 @@ To run the application code of the project, you have to the following steps:
 This is the dashboard of the first case. The data is processed in a non-aggregated form. The dashboard is used to
 visualize the goldstein scale of each country aggregated by the average goldstein scale per day. The aggregation is
 done every time the data is requested.  
-The dashboard is interactive. This means that the user can filter the data by date and country. Furthermore, there is a
-table that shows the top 10 negative events by goldstein scale for the selected dates and countries.
+The dashboard is interactive. This means that the user can filter the data by, for example,
+date and country. Furthermore, there is a table that shows the top 10 negative events by goldstein scale for the selected
+dates and countries.
 Moreover, the user is shown a table with sorted from the highest average goldstein scale to the lowest average goldstein
 scale for every country.  
-At last the user can ovserve a counter which displays the total number of events for the selected dates and countries.
+At last, the user can observe a counter which displays the total number of events for the selection.
 
-![Superset Aggregated](./misc/screenshots/superset/Dash_AG_1.png)
+![Superset Aggregated](./misc/screenshots/superset/Dash_Ag_1.png)
 This is the dashboard of the second case. The data is processed in an aggregated form. The dashboard is used to visualize
 the goldstein scale of each country aggregated by the average goldstein scale per day. The aggregation is done in
 advance.  
 The dashboard is the same minus the table with the top 10 negative events by goldstein scale for the selected dates and
-countries. This is because at the necessary event, information is lost to the aggregation and needs to be addressed in a
+countries. This is because during the aggregation, information about events is lost and needs to be addressed in a
 new aggregation if necessary.
 
 ![Superset DatabaseConnection](./misc/screenshots/superset/DB_Con.png)
 This is the database connection of the Superset dashboard. The database connection is used to connect the Superset
 dashboard to the Spark Thrift Server. The Thrift Server is used to enable the dashboard to access the data in Spark so
 that it can also utilize the distributed processing capabilities of Spark. Superset utilizes a hive connection to
-connect to the Thrift Server. In this case its URL: `hive://spark@jupyter:10000`. This setting window can be accessed
+connect to the Thrift Server. In this case the URL is: `hive://spark@jupyter:10000`. This setting window can be accessed
 by clicking on `Settings` > `Database Connections` > `Apache Spark SQL` in the Superset dashboard.
 ## Documentation
 
@@ -349,7 +348,7 @@ This enables the thrift server to access the data.
 For the second case, the data is processed in an aggregated form.
 
 The steps are the same as in the non-aggregated case, except that the data is aggregated before it is cached.
-The aggregation depends on the needs of the user. A data scientist can then decide how the data should be aggregated.
+The aggregation depends on the needs of the user. A data engineer can then decide how the data should be aggregated.
 Subsequently, only the aggregated data is cached and provisioned as a global temporary view in Spark like in the
 non-aggregated case.
 
@@ -374,13 +373,13 @@ The Thrift Server is a component of Spark that enables JDBC/ODBC clients to exec
 During the development of this project, the researchers weren't able to discover a way to scale the Thrift Server
 horizontally. Especially because it was a requirement that the Thrift Sever can access cached Temporary Views.
 This means that the Thrift Server currently is a bottleneck and single point of failure in the application.
-This is because the Thrift Server is a single instance that is not distributed. Future research would be necessary
-to either find a way to scale the Thrift Server horizontally or to find an alternative to the Thrift Server.
+This is because the Thrift Server is a single instance that is not distributed and running in the JVM of the SparkDriver.
+Future research would be necessary to either find a way to scale the Thrift Server horizontally or to find an alternative
+to the Thrift Server.
 
 **Storage on Local File System:**  
 The data is stored in the local file system, which means that the data is neither replicated nor distributed to
-different
-nodes, like it would be if a distributed file system like HDFS were used.
+different nodes, like it would be if a distributed file system like HDFS was used.
 Therefore, the data storage constitutes a single point of failure as well as an I/O bottleneck.
 This decreases the performance and the scalability of the solution significantly, because Spark can't read the data
 properly in parallel.
@@ -399,6 +398,13 @@ not recommended because of synchronization issues and the potential loss of data
 The researchers didn't have access to a cluster with sufficient hardware to test the scalability of the application.
 The hardware used was a single machine with 32GB of RAM and 12 cores. This means that the scalability of the application
 could not be tested properly so that some approximations and assumptions had to be made.
+
+**Disk mount into Spark nodes**
+The data is mounted via a docker volume into the Spark nodes. This is not recommended for production use, because it
+can lead to synchronization issues and the potential loss of data. Furthermore, the local file system is a bottleneck
+for the performance of the application. A distributed file system like HDFS should be used instead but was not
+implemented because of time constraints and the additional complexity the integration of a distributed file system would
+introduce.
 
 ### References
 
@@ -425,7 +431,7 @@ date back to the 19th of February in 2015, almost the complete dataset was inclu
 recorded before February 2015 can be obtained from the GDELT 1.0 Event Database, which dates back to 1979. Because of
 the GDELT 2.0 dataset's size and the limited resources available for the analysis, the GDELT 1.0 dataset was not
 included in this project. In the following sections, mentions of a "complete" or "total" dataset refer to the 8.5 years
-worth of event data utilized in the analysis.
+worth of event data that were utilized in the analysis.
 
 The GDELT 2.0 dataset is provided in CSV files and is generated and uploaded every 15 minutes. For use in the project,
 these files were downloaded and then converted to the Parquet format. This conversion reduces the required storage space
@@ -472,9 +478,9 @@ application was measured by running both versions separately and measuring the f
 - **Query Response Time**: The amount of time it takes for the application to process and successfully respond to an SQL
   query. This metric was chosen, because Superset sends SQL queries to the Thrift Server to retrieve data for
   visualizations.
-  Therefore, the response time has a significant impact on the user experience, when using accessing the dashboard.
+  Therefore, the response time has a significant impact on the user experience, when the dashboard is used.
 - **Pre-processing Turnaround Time**: The amount of time it takes for the application to load the necessary data from
-  the local file system into the Spark Cluster, pre-process it and cache it. This metric was chosen, because it
+  the local file system into the Spark Cluster, pre-process it, and cache it. This metric was chosen, because it
   represents a complete cycle of the application, from loading the data to making it available for SQL queries. This has
   an impact on how quickly data can be made available for visualizations.
 
@@ -493,9 +499,9 @@ Unless specified otherwise in the individual test, the Spark Cluster was configu
 #### Data Volume
 
 The following tests were conducted to analyze how an increasing amount of data impacts the performance of the
-application. To achieve this, the application was executed repeatedly, while incrementing the number of months of data,
+application. To achieve this, the application was executed repeatedly, while incrementing the number of monthly data,
 which are loaded into the cluster and processed starting at July 2015 until the complete dataset was included
-(e.g. 1 month, 2 months, 3 months, ... of data). To minimize the total test duration, the measurements were done with
+(e.g., 1 month, 2 months, 3 months, ... of data). To minimize the total test duration, the measurements were done with
 increasing data increments. Each measured value is depicted as a dot on the plotted lines in the following plots.
 It's also important to mention that the data volume of different months can vary. For that reason, the data volume of
 the months was calculated by adding the size of the included parquet files, to depict the impact of the data volume more
@@ -505,8 +511,8 @@ The following plots illustrate the impact of an increasing data volume on the pr
 aggregated and non-aggregated version. The first plot depicts an increase of data up to 1 year, whereas the
 following plot depicts an increase of data up to the complete dataset:
 
-<img src="./misc/plots/data_volume_turnaround_year.png" width="100%" alt="">
-<img src="./misc/plots/data_volume_turnaround_all.png" width="100%" alt="">
+<img src="./misc/plots/data_volume_turnaround_year.png" width="2531" alt="">
+<img src="./misc/plots/data_volume_turnaround_all.png" width="2554" alt="">
 
 In both cases, it can be clearly seen that the pre-processing turnaround time increases linearly with the data volume.
 This is expected for multiple reasons. First, the data volume is the main factor that impacts the time it takes to
@@ -518,68 +524,68 @@ parallel. That means that the data has to be read sequentially and is limited by
 increases the duration of read operations from the disk linearly with the data volume.
 
 Comparing the aggregated and non-aggregated version in the plots, there is a noticeable difference in the factor by
-which the turnaround time increases with the data volume. On average the turnaround time of the non-aggregated version
+which the turnaround time increases with the data volume. On average, the turnaround time of the non-aggregated version
 increases by 46.11 seconds per additional GB of data, while the turnaround time of the aggregated version only increases
 by 7.07 s/GB. This can be explained by the fact that the non-aggregated version has to load and process the complete
-dataset. The aggregated version on the other hand, only has to read a small subset of the 61 columns of the dataset,
+dataset. The aggregated version, on the other hand, only has to read a small subset of the 61 columns of the dataset,
 which is required for the aggregation. The additional effort, which is required to calculate the aggregation, is
 presumably
-offset by the reduced effort of the subsequent operations. E.g. the non-aggregated version has to join the complete
-dataset with the country code mapping table, which is an expensive operation when data is partitioned and distirbuted,
-while the aggregated version executes the join on the aggregated data. Therefore the impact of additional data is
+offset by the reduced effort of the subsequent operations. E.g., the non-aggregated version has to join the complete
+dataset with the country code mapping table, which is an expensive operation when data is partitioned and distributed,
+while the aggregated version executes the join on the aggregated data. Therefore, the impact of additional data is
 significantly lower in the aggregated version.
 
 The following plots illustrate the impact of an increasing data volume on the query response time of the
 aggregated and non-aggregated version:
 
-<img src="./misc/plots/data_volume_response_year.png" width="100%" alt="">
-<img src="./misc/plots/data_volume_response_all.png" width="100%" alt="">
+<img src="./misc/plots/data_volume_response_year.png" width="2485" alt="">
+<img src="./misc/plots/data_volume_response_all.png" width="2508" alt="">
 
-By looking at the plots above one can clearly notice that increasing the data volume has a significant impact on the
+By looking at the plots above, one can clearly notice that increasing the data volume has a significant impact on the
 query response time of the non-aggregated version, while there is no or even a slight positive impact on the query
-response
-in the aggregated version. This can be explained by the fact, that the queries sent to the Thrift Server during the
+response in the aggregated version.
+This can be explained by the fact that the queries sent to the Thrift Server during the
 tests were the same as the ones used in the respective Superset dashboards. The queries for the non-aggregated version
-therefore
-trigger an aggregation of the data on-demand, which is a very expensive operation and requires more effort the more
-data has to be processed. The query for the aggregated version on the other hand, only has to read the already
-aggregated data from the cache. The absolute size of the aggregated data is negligible, even when more data is added,
-therefore the query response time almost independent of the data volume. The slight decrease in the query response time
-could be explained by the fact, that the data is not partitioned when the cached aggregation result is too small (e.g.
-for 1 month of data the aggregated data is not partitioned). Once the data is partitioned, the data can be read in
-parallel by mutliple executors, which might have a small positive impact on the query response time.
+therefore trigger an aggregation of the data on-demand,
+which is a costly operation and requires more effort the more data has to be processed.
+The query for the aggregated version, on the other hand, only has to read the already
+aggregated data from the cache. The absolute size of the aggregated data is negligible; even when more data is added,
+therefore the query response time is almost independent of the data volume. The slight decrease in the query response time
+could be explained by the fact that the data is not partitioned when the cached aggregation result is too small (e.g.,
+for 1 month of data, the aggregated data is not partitioned). Once the data is partitioned, the data can be read in
+parallel by multiple executors, which might have a small positive impact on the query response time.
 
 Upon closer examination of the non-aggregated version, a significant increase of the factor by which the query response
 time grows relative to the data volume becomes evident between 7 and 8 months of data. This can be explained by the
-fact, that at 8 months worth of data the available memory space is not sufficient to cache the complete dataset in
-memory for the first time (indicated by the dotted red line). Therefore the remaining data of this test run and the
+fact that at 8 months worth of data, the available memory space is not sufficient to cache the complete dataset in
+memory for the first time (indicated by the dotted red line). Therefore, the remaining data of this test run and the
 additional data in the subsequent test runs are cached on disk. When an SQL query is processed, the data has to be
 read from disk, which is an I/O-bound operation that increases the query response time significantly.
 
 #### Load
 
 The following tests were conducted to analyze how an increasing load impacts the performance of the application.
-In the context of this project an increasing number of concurrent users, who are using the Superset dashboard, or an
-increasing number dashboard elements (e.g. tables, charts, etc.) can be considered as an increasing load. In both cases
-the result would be an increasing number of SQL queries, which are sent to the Thrift Server in parallel. Therefore the
+In the context of this project, an increasing number of concurrent users who are using the Superset dashboard, or an
+increasing number of dashboard elements (e.g., tables, charts, etc.) can be considered as an increasing load. In both cases, 
+the result would be an increasing number of SQL queries, which are sent to the Thrift Server in parallel. Therefore, the
 impact of an increasing load was measured by sending an increasing number of SQL queries to the Thrift Server in
 parallel and measuring how fast the Thrift Server can process and respond to the queries on average. Both versions of
 the application were tested by using the same queries, which would be sent to the Thrift Server by the respective
-Superset dashboard. The minimum of 1 month of data was loaded, processed and cached for the tests, to ensure that the
+Superset dashboard. The minimum of 1 month of data was loaded, processed and cached for the tests. This is to ensure that the
 cached data fits into memory and to be able to properly scale the number of parallel queries without running into
 memory issues too early.
 
 The following plots illustrate the impact of an increasing load on the query response time of the aggregated
-and non-aggregated version. The first plot depicts an increasing load up to 100 parallel queries comparing the query
-response time of both versions, whereas the following plots depict an increasing load up to 1000 parallel queries and
+and non-aggregated version. The first plot depicts an increasing load of up to 100 parallel queries comparing the query
+response time of both versions, whereas the following plots depict an increasing load of up to 1000 parallel queries and
 their individual impact on the aggregated and non-aggregated version:
 
-<img src="./misc/plots/load_response_both.png" width="100%">
-<img src="./misc/plots/load_response_aggregated.png" width="100%">
-<img src="./misc/plots/load_response_non_aggregated.png" width="100%">
+<img src="./misc/plots/load_response_both.png" width="2543" alt="">
+<img src="./misc/plots/load_response_aggregated.png" width="2485" alt="">
+<img src="./misc/plots/load_response_non_aggregated.png" width="2531" alt="">
 
-In the first plot it can be seen that the query response time of both versions increase in linear fashion with the
-increasing load up to 100 parallel queries. The factor by which the query response time increases with the load is much
+In the first plot, it can be seen that the query response time of both versions increase in linear fashion with the
+increasing load of up to 100 parallel queries. The factor by which the query response time increases with the load is much
 higher for the non-aggregated version. This is attributed to the same factors mentioned in the previous section, such
 as the increased processing effort required for on-demand data aggregation. When looking at the third plot, it can even
 be noticed that the query response time of the non-aggregated version does not increase linearly, but rather
@@ -588,7 +594,7 @@ of the non-aggregated version and the limited RAM in the test environment, which
 non-aggregated version.
 
 A critical finding from the tests is that an increase in the number of parallel queries sent to the Thrift Server not
-only negatively affects the query response time but can also result in the complete failure of the Thrift Server. In the
+only negatively affects the query response time but can also result in the complete failure of the Thrift Server. The
 second plot shows that in the aggregated version, the Thrift Server fails to process and respond to queries once 600
 queries are sent in parallel. For the non-aggregated version, the Thrift Server fails even earlier once 350 parallel
 queries reach the server, which can be attributed again to the higher memory requirements. This is a critical finding
@@ -604,7 +610,7 @@ architecture.
 The following tests were conducted to analyze how an increasing amount of resources impacts the performance of the
 application. In the context of big data, scaling is typically achieved by adding additional nodes comprised
 of commodity hardware to a cluster. To analyze this, the application was executed multiple times, each time manually
-increasing the number of workers in the Spark Cluster. However the configuration of a single worker, including the
+increasing the number of workers in the Spark Cluster. However, the configuration of a single worker, including the
 number of executors per worker as well as the allocated RAM and CPU cores per executor, remained unchanged.
 
 The tests were executed with the following resource configurations:
@@ -617,59 +623,59 @@ The tests were executed with the following resource configurations:
 
 To prevent any potential side effects, the measurements were conducted with different amounts of data for the aggregated
 and non-aggregated version. The non-aggregated version was tested using 2 months of data, because that is the maximum
-amount which can be cached completely in memory even on a single worker node. The aggregated version was tested using 6
-months of data, to make sure, that the cached data is big enough to be partitioned and distributed across multiple
+amount that can be cached completely in memory even on a single worker node. The aggregated version was tested using 6
+months of data, to make sure that the cached data is big enough to be partitioned and distributed across multiple
 nodes, to see the impact of adding additional resources.
 
-The following plot illustrate the impact of an increasing amount of resources on the pre-processing turnaround time of
+The following plot illustrates the impact of an increasing amount of resources on the pre-processing turnaround time of
 the aggregated and non-aggregated version:
 
-<img src="./misc/plots/resources_turnaround.png" width="100%">
+<img src="./misc/plots/resources_turnaround.png" width="2508" alt="">
 
 The plot shows that the pre-processing turnaround time of the non-aggregated version clearly decreases with an
-increasing number of workers. This is expected, because the data is partitioned and distributed across multiple nodes,
-which enables the data to be processed in parallel utiliizing the additional resources. However, it is important to
-note, that the decrease is not liner, which is typically required in big data application, but rather logarithmic. The
-root cause for this could be the I/O-bottleneck, when reading the data from the local file system, which can't be
+increasing number of workers. This is expected because the data is partitioned and distributed across multiple nodes,
+which enables the data to be processed in parallel utilizing the additional resources. However, it is important to
+note that the decrease is not liner, which is typically required in big data application, but rather logarithmic. The
+root cause for this could be the I/O-bottleneck when reading the data from the local file system, which can't be
 parallelized properly. The addition of nodes therefore has a diminishing effect on the pre-processing turnaround time,
 when including the load time of the data from the local file system.
 
 The impact of an increasing number of workers on the pre-processing turnaround time of the aggregated version is
 significantly lower. This can also be explained by the I/O-bottleneck, but more importantly by the additional time it
-takes to exchange data between the nodes. This is relevant for the aggregated case, because the aggregation which is
-done during the pre-processing phase, requries the data to be shuffled. As the data is relatively small, the additional
+takes to exchange data between the nodes. This is relevant for the aggregated case, because the aggregation, which is
+done during the pre-processing phase, requires the data to be shuffled. As the data is relatively small, the additional
 overhead of shuffling the data could exceed the benefits of utilizing additional resources for processing.
 
-The following plot illustrate the impact of an increasing amount of resources on the query response time of the
+The following plot illustrates the impact of an increasing number of resources on the query response time of the
 aggregated and non-aggregated version:
 
-<img src="./misc/plots/resources_response.png" width="100%">
+<img src="./misc/plots/resources_response.png" width="2520" alt="">
 
 The given plot shows that the query response time of the non-aggregated version decreases with an increasing number of
-workers. This is expected, because the aggregation of the data is done on-demand, which can be parallelized across
+workers. This is expected because the aggregation of the data is done on-demand, which can be parallelized across
 multiple nodes. The additional resources therefore enable the data to be processed faster, which results in a lower
 query response time. However, the decrease is again not linear, but rather logarithmic, which can be attributed to the
 necessary shuffle operations (similar to the impact on the pre-processing turnaround time of the aggregated version).
 For the aggregated version, the plot shows that the query response time actually increases with an increasing number of
-workers. The reason for this could be that the cached data volume is so small, that the overhead of reading the data
-from multiple nodes exceeds the benefits of the additional ressources. This is due to the fact that the the queries in
+workers. The reason for this could be that the cached data volume is so small that the overhead of reading the data
+from multiple nodes exceeds the benefits of the additional resources. This is because the queries in
 the aggregated version only read the already aggregated data from the cache and don't require any additional processing.
 
 In summary, the test results show that the scalability of the application (increasing the performance by adding
-additional resources) is very limited. The main reason for this is the fact, that data must be read from the local file
+additional resources) is very limited. The main reason for this is the fact that data must be read from the local file
 system which constitutes an I/O-bottleneck and prevents a linear decrease of the pre-processing turnaround time.
-Additionally the the overhead of shuffling the data between the nodes, which is required for the aggregation, reduces
+Additionally, the overhead of shuffling the data between the nodes, which is required for the aggregation, reduces
 the benefits of adding additional resources, especially when the amount of data is rather small. Another factor which
 limits the scalability is the Thrift Server, which can't be scaled at all and therefore represents a bottleneck
 for incoming queries.
 
-In general more tests would be necessary to more accurately measure the scalability of the application. Leveraging
+In general, more tests would be necessary to more accurately measure the scalability of the application. Leveraging
 additional hardware would enable the exploration of a wider range of cluster configurations with larger amounts of data
 that could be fully cached in memory.
 
 ### Fault Tolerance
 
-The following tests were conducted to analyze the fault tolerance of the application. This is important, because the
+The following tests were conducted to analyze the fault tolerance of the application. This is important because the
 application should be able to handle the failure of individual nodes and the contained data without having to process
 the complete dataset from scratch again. To measure the impact of failing nodes, the application was executed multiple
 times, each time manually stopping a different number of workers in the Spark Cluster after the data has
@@ -691,29 +697,28 @@ Two workers stopped with 33.33% of the data cached in 2 partitions:
 
 The following plot illustrates the impact of failing workers on the query response time of the aggregated version:
 
-<img src="./misc/plots/fault_tolerance_response.png" width="100%" alt="">
+<img src="./misc/plots/fault_tolerance_response.png" width="2508" alt="">
 
 As the plot shows, that queries sent to the Thrift Server are still processed and responded to, even when workers are
-stopped. However, the query response time increases by orders of magnitude. This is expected,
+stopped. However, the query response time increases by orders of magnitude. This is expected 
 because the partitions, which are lost due to the failed workers, have to be re-loaded from the local file system and
 processed again.
 
 This emphasizes two important characteristics of Spark:
 
 - **Lineage Graph**: Spark keeps track of the operations that are performed on the data, which enables it to re-create
-  lost
-  partitions by re-executing the operations that were performed on the individual partitions.
+  lost partitions by re-executing the operations that were performed on the individual partitions.
 - **Lazy Evaluation**: Spark only processes the data when it is required, which enables it to re-create lost partitions
   only when they are needed.
 
-This means that the application is fault-tolerant, because it can re-create lost partitions and is therefore able to
+This means that the application is fault-tolerant because it can re-create lost partitions and is therefore able to
 successfully respond to queries, even when workers containing needed partitions are stopped. The downside of the
 re-creation of data is Spark's lazy evaluation mechanism, since the data is not re-created right away, but only when
 a query is sent to the Thrift Server, which can result in a significant increase of the query response time for the user
 which sent the query.
 
-The Thrift Server on the other hand, as it was already mentioned, acts as a single point of failure in the application,
-because it can't be replicated to ensure that queries can be processed and responded to, even when an instance of the
+The Thrift Server, on the other hand, as it was already mentioned, acts as a single point of failure in the application.
+It can't be replicated to ensure that queries can be processed and responded to, even when an instance of the
 Thrift Server fails.
 
 ## Evaluation
@@ -723,7 +728,7 @@ Thrift Server fails.
 Whether the non-aggregated is better than the aggregated case depends on the use case. The non-aggregated case is better
 if the data
 analyst wants to analyze the data in a fine-grained way. This is because the data is not aggregated and can be analyzed
-on the fly in any way. Furthermore, it is no one required to aggregate the data for the data analyst. This means that
+on the fly in any way. Furthermore, no data engineer is required to aggregate the data for the data analyst. This means that
 the data analyst can create visualizations that are tailored to his needs without depending on a data engineer.
 However, the drawback is that the data needs to be processed every time a visualization is created or loaded. This can
 take a relatively long time depending on the size of the data and can be quite resource-intensive.
@@ -732,11 +737,8 @@ In terms of hardware, the non-aggregated case is more expensive than the aggrega
 to be
 processed every time a visualization is created or loaded. This means that more data needs to be processed more often
 than in the aggregated case and that significantly more memory is required. This is because the whole dataset is
-necessary
-and
-needs to be cached in memory to be processed quickly. So the non-aggregated case is more expensive in terms of hardware
-but
-cheaper in terms of development costs.
+necessary and needs to be cached in memory to be processed quickly.
+So the non-aggregated case is more expensive in terms of hardware but cheaper in terms of development costs.
 
 | Pros                     | Cons                 |
 |--------------------------|----------------------|
@@ -748,8 +750,7 @@ cheaper in terms of development costs.
 ### Aggregated Case: Pros & Cons
 
 Whether the aggregated is better than the non-aggregated case depends also on the use case. The aggregated case is
-better if the
-data
+better if the data
 analyst wants to analyze the data in an aggregated way. This is because the data can be preprocessed and aggregated
 specifically beforehand and can be visualized immediately. Because the processing of the smaller dataset is less
 ressource
@@ -801,8 +802,7 @@ redundant. This means that the data is fault-tolerant and can be recovered if a 
 This is an important improvement over the local filesystem which was used in the project. It is estimated that about
 150GB of data will be stored in the EBS volumes. This includes the raw data and the aggregated data. The businessdata
 will not be considered in this estimation. The data will be stored in the parquet format because it is a columnar
-storage
-format optimized for analytics workloads.
+storage format optimized for analytics workloads.
 
 The data engineering team will work with a m4.xlarge EC2 instance in which a Jupyter server is running. The Jupyter
 server is used to run the application code of the project. The instance is configured with 16GB of RAM and 4 vCPUs.
@@ -820,8 +820,7 @@ In this setup, the data engineering team will be responsible for preparing the d
 science team to analyze. The data engineering team will use the Jupyter server to run the application code of the
 project. The data engineering team will also be responsible for managing the EMR cluster.
 The cluster will use the EBS volumes as storage so that it can access the raw preprocessed data. Furthermore, the
-cluster
-saves the aggregated data in the EBS volumes. This enables the data science team to access the aggregated data in
+cluster saves the aggregated data in the EBS volumes. This enables the data science team to access the aggregated data in
 Superset.
 
 It is estimated that the aggregated data will be small enough that big data frameworks like Spark are not necessary to
@@ -832,8 +831,7 @@ the development of this project, the researchers weren't able to discover a way 
 The cost of this setup is estimated to be about 786.18$ per month. This includes the costs for the EBS volumes, the
 EC2 instances, and the EMR cluster. The costs for the EBS volumes are estimated to be about 17.85$ per month. The costs
 for the EC2 instances are estimated to be about 175.20$ per month. The costs for the EMR cluster are estimated to be
-about 593.13$ per month. The costs for the EMR cluster are estimated to be so high because the cluster is configured
-with
+about 593.13$ per month. The costs for the EMR cluster are estimated to be so high because the cluster is configured with
 a lot of memory. This is because the cluster needs to be able to process the whole dataset at once. The costs for the
 EMR cluster could be reduced by using a smaller cluster and processing the data in batches. However, this would increase
 the time it takes to process the data. The costs for the Cluster were calculated with the rough estimation that
