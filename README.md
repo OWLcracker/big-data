@@ -259,6 +259,32 @@ To run the application code of the project, you have to the following steps:
 3. Navigate to `notebooks` > `test_evaluation.ipynb`
 4. Run the code cells in the notebook
 
+### SuperSet Dashboard
+![Superset Non-Aggregated](./misc/screenshots/superset/Dash_NAG_1.png)
+![Superset Aggregated](./misc/screenshots/superset/Dash_NAG_2.png)
+This is the dashboard of the first case. The data is processed in a non-aggregated form. The dashboard is used to
+visualize the goldstein scale of each country aggregated by the average goldstein scale per day. The aggregation is
+done every time the data is requested.  
+The dashboard is interactive. This means that the user can filter the data by date and country. Furthermore, there is a
+table that shows the top 10 negative events by goldstein scale for the selected dates and countries.
+Moreover, the user is shown a table with sorted from the highest average goldstein scale to the lowest average goldstein
+scale for every country.  
+At last the user can ovserve a counter which displays the total number of events for the selected dates and countries.
+
+![Superset Aggregated](./misc/screenshots/superset/Dash_AG_1.png)
+This is the dashboard of the second case. The data is processed in an aggregated form. The dashboard is used to visualize
+the goldstein scale of each country aggregated by the average goldstein scale per day. The aggregation is done in
+advance.  
+The dashboard is the same minus the table with the top 10 negative events by goldstein scale for the selected dates and
+countries. This is because at the necessary event, information is lost to the aggregation and needs to be addressed in a
+new aggregation if necessary.
+
+![Superset DatabaseConnection](./misc/screenshots/superset/DB_Con.png)
+This is the database connection of the Superset dashboard. The database connection is used to connect the Superset
+dashboard to the Spark Thrift Server. The Thrift Server is used to enable the dashboard to access the data in Spark so
+that it can also utilize the distributed processing capabilities of Spark. Superset utilizes a hive connection to
+connect to the Thrift Server. In this case its URL: `hive://spark@jupyter:10000`. This setting window can be accessed
+by clicking on `Settings` > `Database Connections` > `Apache Spark SQL` in the Superset dashboard.
 ## Documentation
 
 ### Architecture
@@ -365,7 +391,9 @@ complexity the integration of a distributed file system would introduce. It shou
 cluster is beneficial for this project or if another fault-tolerant distributed file system is a more suitable solution.
 
 **Superset Database**
-TODO
+Normally in a development environment, the Superset database would be persisted in a docker volume. However, in this case,
+the database is mounted from the host system. This simplifies the setup and the usage of the project, but it is normally
+not recommended because of synchronization issues and the potential loss of data.
 
 **Insufficient Hardware for Tests:**
 The researchers didn't have access to a cluster with sufficient hardware to test the scalability of the application.
